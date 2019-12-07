@@ -4,6 +4,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os.path
+
 import numpy as np
 import pybullet
 
@@ -19,6 +21,7 @@ class Simulator(object):
     """The Simulator class."""
 
     def __init__(self,
+                 assets_dir,
                  physics_backend='BulletPhysics',
                  time_step=1e-3,
                  gravity=[0, 0, -9.8],
@@ -27,6 +30,7 @@ class Simulator(object):
         """Initialize the simulator.
 
         Args:
+            assets_dir: The assets directory.
             physics_backend: Name of the physics engine backend.
             time_step: Time step of the simulation.
             gravity: The gravity as a 3-dimensional vector.
@@ -34,6 +38,7 @@ class Simulator(object):
             use_visualizer: Render the simulation use the debugging visualizer
                 if True.
         """
+        self._assets_dir = assets_dir
         self._gravity = gravity
 
         # Create the physics backend.
@@ -113,6 +118,8 @@ class Simulator(object):
         Returns:
             An instance of Body.
         """
+        path = os.path.join(self._assets_dir, filename)
+
         if pose is None:
             pose = [[0, 0, 0], [0, 0, 0]]
 
@@ -120,7 +127,7 @@ class Simulator(object):
         if is_controllable:
             body = ControllableBody(
                     simulator=self,
-                    filename=filename,
+                    filename=path,
                     pose=pose,
                     scale=scale,
                     is_static=is_static,
@@ -128,7 +135,7 @@ class Simulator(object):
         else:
             body = Body(
                     simulator=self,
-                    filename=filename,
+                    filename=path,
                     pose=pose,
                     scale=scale,
                     is_static=is_static,

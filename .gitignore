@@ -1,5 +1,6 @@
 # Self-defined
 *.pyc
+*.pyv
 *.nfs*
 *.out
 *.json
@@ -7,6 +8,7 @@
 0_VRDemoSettings.txt
 
 data
+assets
 episodes
 outputs
 logs
