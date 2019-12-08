@@ -37,15 +37,16 @@ SIM:
     POSE: [[0, 0, 0], [0, 0, 0]]
 
   GROUND:
-    PATH: 'sim/planes/plane_ceramic.urdf'
+    PATH: 'sim/envs/arm_env/planes/plane_ceramic.urdf'
     POSE: [[0, 0, -0.9], [0, 0, 0]]
 
   WALL:
-    PATH: 'sim/wall.urdf'
+    USE: 0
+    PATH: 'sim/envs/arm_env/wall.urdf'
     POSE: [[0, 0, -0.9], [0, 0, 0]]
 
   TABLE:
-      PATH: 'sim/tables/table_svl_wooden.urdf'
+      PATH: 'sim/envs/arm_env/tables/table_svl_wooden.urdf'
       POSE: [[0.6, 0.05, -0.9], [0, 0, 0]]
       HEIGHT_RANGE: [0.8, 0.8]
       X_RANGE: 0.76

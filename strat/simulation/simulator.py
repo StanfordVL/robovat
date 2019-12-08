@@ -21,7 +21,7 @@ class Simulator(object):
     """The Simulator class."""
 
     def __init__(self,
-                 assets_dir,
+                 assets_dir=None,
                  physics_backend='BulletPhysics',
                  time_step=1e-3,
                  gravity=[0, 0, -9.8],
@@ -38,7 +38,7 @@ class Simulator(object):
             use_visualizer: Render the simulation use the debugging visualizer
                 if True.
         """
-        self._assets_dir = assets_dir
+        self._assets_dir = os.path.abspath(assets_dir or './')
         self._gravity = gravity
 
         # Create the physics backend.
@@ -53,6 +53,10 @@ class Simulator(object):
     def __del__(self):
         """Delete the simulator."""
         del self._physics
+
+    @property
+    def assets_dir(self):
+        return self._assets_dir
 
     @property
     def physics(self):
@@ -108,7 +112,8 @@ class Simulator(object):
         """Add a body to the simulation.
 
         Args:
-            filename: The path to the URDF or SDF file to be loaded.
+            filename: The path to the URDF file to be loaded. If the path is not
+                absolute path, it will be joined with the assets directory.
             pose: The initial pose as an instance of Pose.
             scale: The scaling factor of the body.
             is_static: If True, set the base of the body to be static.
@@ -118,7 +123,10 @@ class Simulator(object):
         Returns:
             An instance of Body.
         """
-        path = os.path.join(self._assets_dir, filename)
+        if os.path.isabs(filename):
+            path = filename
+        else:
+            path = os.path.join(self._assets_dir, filename)
 
         if pose is None:
             pose = [[0, 0, 0], [0, 0, 0]]

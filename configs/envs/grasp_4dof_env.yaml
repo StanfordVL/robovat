@@ -1,0 +1,56 @@
+!include arm_env.yaml
+
+DEBUG: 0
+
+MAX_STEPS: null
+
+OBSERVATION:
+  # Choose between `depth` and `point_cloud`.
+  TYPE: 'depth'
+
+ACTION:
+  # Choose between `IMAGE`(in image space) and `CUBOID`(in a 3D cuboid region).
+  TYPE: 'CUBOID'
+
+  # The `CUBOID` defines a cuvoid region for the grasping center.
+  CUBOID:
+    LOW: [0.30, -0.30, 0.02]
+    HIGH: [0.90, 0.30, 0.12]
+
+
+SIM:
+  ARM:
+    CONFIG: 'configs/robots/sawyer_sim.yaml'
+    POSE: [[0, 0, 0], [0, 0, 0]]
+
+  GROUND:
+    PATH: 'sim/envs/arm_env/planes/plane.urdf'
+    POSE: [[0, 0, -0.9], [0, 0, 0]]
+
+  WALL:
+    USE: 0
+    PATH: 'sim/envs/arm_env/wall.urdf'
+    POSE: [[0, 0, -0.9], [0, 0, 0]]
+
+  TABLE:
+      PATH: 'sim/envs/arm_env/tables/table_grasp.urdf'
+      POSE: [[0.6, 0, -0.9], [0, 0, 0]]
+      HEIGHT_RANGE: [0.9, 0.9]
+
+  GRASPABLE:
+    PATHS: [
+    'sim/procedural/*0/*.urdf',
+    ]
+    POSE:
+      X: 0.1
+      Y: -0.2
+      Z: 0.3
+      ROLL: [0, 0]
+      PITCH: [0, 0]
+      YAW: [1.5, 1.5]
+    SCALE:
+      [1.0, 1.0]
+    USE_RANDOM_SAMPLE: 1
+    RESAMPLE_N_EPISODES: 0
+
+  MAX_ACTION_STEPS: 4000
