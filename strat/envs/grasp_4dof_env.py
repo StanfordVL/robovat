@@ -116,8 +116,6 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         if self.config.ACTION.TYPE == 'CUBOID':
             low = self.config.ACTION.CUBOID.LOW + [0.0]
             high = self.config.ACTION.CUBOID.HIGH + [2 * np.pi]
-            print('low: ', low)
-            print('high: ', high)
             return gym.spaces.Box(
                     low=np.array(low),
                     high=np.array(high),
@@ -190,10 +188,8 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         Args:
             action: A 4-DoF grasp defined in the image space or the 3D space.
         """
-        print('action: ', action)
         if self.config.ACTION.TYPE == 'CUBOID':
             x, y, z, angle = action
-            print('x: %r, y: %r, z: %r, angle: %r' % (x, y, z, angle))
         elif self.config.ACTION.TYPE == 'IMAGE':
             grasp = Grasp2D.from_vector(action, camera=self.camera)
             x, y, z, angle = grasp.as_4dof()

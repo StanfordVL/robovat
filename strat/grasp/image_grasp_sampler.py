@@ -146,8 +146,7 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
                  max_depth_offset,
                  depth_sample_window_height,
                  depth_sample_window_width,
-                 gripper_width=0.0,
-                 debug=False):
+                 gripper_width=0.0):
         """Initialize the sampler. 
 
         Args:
@@ -175,7 +174,6 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
             depth_sample_window_width: Width of a window around the grasp center
                 pixel used to determine min depth.
             gripper_width: Maximum width of the gripper.
-            debug: If true, visualize the grasps for debugging.
         """
         # Antipodality parameters.
         self.friction_coef = friction_coef
@@ -199,8 +197,6 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
 
         # Gripper width.
         self.gripper_width = gripper_width
-
-        self.debug = debug
 
     def _sample(self, image, camera, num_samples):
         """Sample antipodal grasps.

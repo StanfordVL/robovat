@@ -117,7 +117,6 @@ class Camera(object):
 
         return images
 
-    @abc.abstractmethod
     def _frames(self):
         """Get the latest set of frames.
         """
