@@ -16,8 +16,8 @@ import gym
 import numpy as np
 from matplotlib import pyplot as plt
 
-from strat.envs import robot_env
 from strat.envs import arm_env
+from strat.envs import robot_env
 from strat.observations import attribute_obs
 from strat.observations import camera_obs
 from strat.observations import pose_obs

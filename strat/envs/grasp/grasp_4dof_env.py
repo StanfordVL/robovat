@@ -13,7 +13,7 @@ import gym
 import numpy as np
 
 from strat.envs import arm_env
-from strat.grasp import Grasp2D
+from strat.envs.grasp.grasp_2d import Grasp2D
 from strat.math import Pose
 from strat.math import get_transform
 from strat.observations import camera_obs
