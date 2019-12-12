@@ -1,5 +1,6 @@
 MAX_STEPS: null
 
+
 KINECT2:
   DEPTH:
     HEIGHT: 424

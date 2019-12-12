@@ -5,10 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os.path
+
 import numpy as np
 
 from strat.envs.grasp import image_grasp_sampler
 from strat.policies import policy
+from strat.utils.yaml_config import YamlConfig
 
 
 class AntipodalGrasp4DofPolicy(policy.Policy):
@@ -24,6 +27,7 @@ class AntipodalGrasp4DofPolicy(policy.Policy):
             config: Policy configuration.
         """
         super(AntipodalGrasp4DofPolicy, self).__init__(env, config)
+        config = self.config
         self._sampler = image_grasp_sampler.AntipodalDepthImageGraspSampler(
                 friction_coef=config.SAMPLER.FRICTION_COEF,
                 depth_grad_thresh=config.SAMPLER.DEPTH_GRAD_THRESH,
@@ -43,6 +47,15 @@ class AntipodalGrasp4DofPolicy(policy.Policy):
                 depth_sample_window_width=(
                     config.SAMPLER.DEPTH_SAMPLE_WINDOW_WIDTH),
                 gripper_width=config.GRIPPER_WIDTH)
+
+    @property
+    def default_config(self):
+        """Load the default configuration file."""
+        config_path = os.path.join(os.path.dirname(__file__), 'configs',
+                                   'antipodal_grasp_4dof_policy.yaml')
+        assert os.path.exists(config_path), (
+                'Default configuration file %s does not exist' % (config_path))
+        return YamlConfig(config_path).as_easydict()
 
     def _action(self, observation):
         """Implementation of action.

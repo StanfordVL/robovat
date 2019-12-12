@@ -75,7 +75,7 @@ class PushEnv(arm_env.ArmEnv):
             self.num_layouts = len(self.layout_configs)
 
         # Action and configuration space.
-        self.num_goal_steps = config.NUM_GOAL_STEPS
+        self.num_goal_steps = self.config.NUM_GOAL_STEPS
         self.cspace = gym.spaces.Box(
                 low=np.array(self.config.ACTION.CSPACE.LOW),
                 high=np.array(self.config.ACTION.CSPACE.HIGH),

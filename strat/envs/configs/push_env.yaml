@@ -1,5 +1,6 @@
-!include ../envs/arm_env.yaml
-!include ../envs/push_layout.yaml
+!include strat/envs/configs/arm_env.yaml
+!include strat/envs/configs/push_layout.yaml
+
 
 DEBUG: 1
 
@@ -114,7 +115,7 @@ SIM:
   STEPS_CHECK: 100
 
   ARM:
-    CONFIG: 'configs/robots/sawyer_sim_push.yaml'
+    CONFIG: 'strat/robots/configs/sawyer_sim_with_stick.yaml'
     POSE: [[0, 0, 0], [0, 0, 0]]
 
   GROUND:

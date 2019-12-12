@@ -1,4 +1,4 @@
-!include arm_env.yaml
+!include strat/envs/configs/arm_env.yaml
 
 DEBUG: 0
 
@@ -20,7 +20,7 @@ ACTION:
 
 SIM:
   ARM:
-    CONFIG: 'configs/robots/sawyer_sim.yaml'
+    CONFIG: null
     POSE: [[0, 0, 0], [0, 0, 0]]
 
   GROUND:

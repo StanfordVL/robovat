@@ -6,6 +6,10 @@ from __future__ import division
 from __future__ import print_function
 
 import abc
+import os.path
+
+from strat.utils.string_utils import camelcase_to_snakecase
+from strat.utils.yaml_config import YamlConfig
 
 
 class Policy(object):
@@ -21,7 +25,17 @@ class Policy(object):
             config: The configuration.
         """
         self.env = env
-        self.config = config
+        self.config = config or self.default_config
+
+    @property
+    def default_config(self):
+        """Load the default configuration file."""
+        policy_name = camelcase_to_snakecase(type(self).__name__)
+        config_path = os.path.join(os.path.dirname(__file__), 'configs',
+                                   '%s.yaml' % (policy_name))
+        assert os.path.exists(config_path), (
+                'Default configuration file %s does not exist' % (config_path))
+        return YamlConfig(config_path).as_easydict()
 
     def action(self, observation):
         """Returns an action for a given state.

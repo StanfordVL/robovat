@@ -15,19 +15,25 @@ import yaml
 from easydict import EasyDict as edict
 
 
+ROOT_DIR = os.path.join(os.path.dirname(__file__), '..', '..')
+
+
 class YamlConfig(object):
     """Class to load a configuration file and parse it into a dictionary.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, root_dir=None):
         """Initialize a YamlConfig by loading it from the given file.
 
         Args:
             filename: The filename of the .yaml file that contains the
                 configuration.
+            root_dir: The root directory of the configuration files.
         """
+        root_dir = root_dir or ROOT_DIR
+
         self.config = None
-        self._load_config(filename)
+        self._load_config(filename, root_dir)
 
     def keys(self):
         """Return the keys of the config dictionary.
@@ -67,23 +73,32 @@ class YamlConfig(object):
 
     def save(self, filename):
         """Save a YamlConfig to disk.
+
+        Args:
+            filename: The filename of the .yaml file that contains the
+                configuration.
         """
         yaml.dump(self, open(filename, 'w'))
 
-    def _load_config(self, filename):
+    def _load_config(self, filename, root_dir):
         """Loads a yaml configuration file from the given filename.
 
         Args:
             filename: The filename of the .yaml file that contains the
                 configuration.
+            root_dir: The root directory of the configuration files.
         """
         # Read entire file for metadata.
         fh = open(filename, 'r')
         self.file_contents = fh.read()
 
         # Replace !include directives with content.
-        config_dir = os.path.split(filename)[0]
         include_re = re.compile('^!include\s+(.*)$', re.MULTILINE)
+
+        if root_dir is None:
+            config_dir = os.path.split(filename)[0]
+        else:
+            config_dir = root_dir
 
         def include_repl(matchobj):
             fname = os.path.join(config_dir, matchobj.group(1))
@@ -117,17 +132,19 @@ class YamlConfig(object):
 
         return expression
 
-    def __ordered_load(self, stream, Loader=yaml.Loader,
+    def __ordered_load(self, 
+                       stream, 
+                       loader=yaml.Loader,
                        object_pairs_hook=OrderedDict):
         """Load an ordered dictionary from a yaml file.
         """
-        class OrderedLoader(Loader):
+        class OrderedLoader(loader):
             pass
 
         OrderedLoader.add_constructor(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            lambda loader, node: object_pairs_hook(
-                loader.construct_pairs(node)))
+                yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+                lambda loader, node: object_pairs_hook(
+                        loader.construct_pairs(node)))
 
         return yaml.load(stream, OrderedLoader)
 

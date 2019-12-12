@@ -90,4 +90,4 @@ ARM_URDF: 'robots/rethink/sawyer_description/urdf/sawyer.urdf'
 BASE_URDF: null
 
 # Path to the URDF file of the head.
-HEAD_URDF: 'robots/rethink/sawyer_description/urdf/sawyer_head.urdf'
+HEAD_URDF: null

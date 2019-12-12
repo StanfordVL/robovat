@@ -20,6 +20,7 @@ from strat.observations import camera_obs
 from strat.reward_fns.grasp_reward import GraspReward
 from strat.robots import sawyer
 from strat.utils.logging import logger
+from strat.utils.yaml_config import YamlConfig
 
 
 GRASPABLE_NAME = 'graspable'
@@ -110,6 +111,15 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             simulator=self.simulator,
             config=self.config,
             debug=self.debug)
+
+    @property
+    def default_config(self):
+        """Load the default configuration file."""
+        config_path = os.path.join(os.path.dirname(__file__), '..', 'configs',
+                                   'grasp_4dof_env.yaml')
+        assert os.path.exists(config_path), (
+                'Default configuration file %s does not exist' % (config_path))
+        return YamlConfig(config_path).as_easydict()
 
     @property
     def action_space(self):

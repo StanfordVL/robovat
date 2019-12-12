@@ -5,7 +5,6 @@ from __future__ import division
 from __future__ import print_function
 
 import abc
-import os
 
 from strat.robots import robot
 from strat.utils.yaml_config import YamlConfig
@@ -24,14 +23,6 @@ class Sawyer(robot.Robot):
         self.config = config or self.default_config
         if isinstance(self.config, str):
             self.config = YamlConfig(self.config).as_easydict()
-
-    @property
-    def default_config(self):
-        """Load the default configuration file."""
-        config_path = os.path.join('configs', 'robots', 'sawyer.yaml')
-        assert os.path.exists(config_path), (
-            'Default configuration file %s does not exist' % (config_path))
-        return YamlConfig(config_path).as_easydict()
 
     @abc.abstractmethod
     def reboot(self):
