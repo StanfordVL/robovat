@@ -27,8 +27,8 @@
 
 	Or install on mac OS by running:
 	```bash
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
-  export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 	brew update
 	brew install python@2  # Python 2
 	sudo pip install -U virtualenv  # system-wide install
