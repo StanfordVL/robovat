@@ -8,6 +8,7 @@
 ## Installation
 
 1. **Install the Python development environment** 
+
 	Check if your Python environment is already configured on your system. 
 	We recommend using Python 2.7, while some simulated environments also support Python 3.
 	```bash
@@ -23,17 +24,18 @@
 	sudo apt install python-dev python-pip
 	sudo pip install -U virtualenv  # system-wide install
 	```
-	or install on mac OS by running:
+
+	Or install on mac OS by running:
 	```bash
-	/usr/bin/ruby -e "$(curl -fsSL
-	https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+  export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 	brew update
 	brew install python@2  # Python 2
 	sudo pip install -U virtualenv  # system-wide install
 	```
 
 2. **Create a virtual environment (recommended)** 
+
 	Create a new virtual environment in the root directory or anywhere else:
 	```bash
 	virtualenv --system-site-packages -p python2.7 .venv
@@ -50,12 +52,14 @@
 	```
 
 3. **Install the package** 
-		The package can be installed by running:
+
+	The package can be installed by running:
 	```bash
 	python setup.py install
 	```
 
 4. **Download assets** 
+
 	Download and unzip the assets folder to the root directory or anywhere else:
 	```bash
 	wget ftp://cs.stanford.edu/cs/cvgl/strat/assets.zip
