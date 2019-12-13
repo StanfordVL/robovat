@@ -34,7 +34,7 @@ ARM:
 
 SIM:
   ARM:
-    CONFIG: 'configs/robots/sawyer_sim.yaml'
+    CONFIG: 'strat/robots/configs/sawyer_sim.yaml'
     POSE: [[0, 0, 0], [0, 0, 0]]
 
   GROUND:

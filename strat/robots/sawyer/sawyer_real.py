@@ -57,7 +57,7 @@ class SawyerReal(sawyer.Sawyer):
 
         See the parent class.
         """
-        sawyer.Sawyer.__init__(self, config=config)
+        super(SawyerReal, self).__init__(config=config)
 
         if rospy.get_name() == '/unnamed':
             rospy.init_node('sawyer')

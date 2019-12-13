@@ -66,7 +66,7 @@ def parse_args():
         dest='env_config',
         type=str,
         help='The configuration file for the environment.',
-        default='configs/envs/arm_env.yaml')
+        default='strat/envs/configs/arm_env.yaml')
 
     parser.add_argument(
         '--debug',
@@ -185,19 +185,13 @@ class SawyerCLI(object):
 
         atexit.register(readline.write_history_file, history_file)
 
-        # Set up the environment.
+        # Set up the scene.
         if self.mode == 'sim':
             print('Setting up the environment in simulation...')
             self.simulator = Simulator(use_visualizer=self.debug,
                                        assets_dir=self.assets_dir)
             self.simulator.reset()
             self.simulator.start()
-
-            self.robot = sawyer.SawyerSim(
-                simulator=self.simulator,
-                pose=self.config.SIM.ARM.POSE,
-                joint_positions=self.config.ARM.OFFSTAGE_POSITIONS,
-                config=self.config.SIM.ARM.CONFIG)
 
             self.ground = self.simulator.add_body(
                 self.config.SIM.GROUND.PATH,
@@ -224,7 +218,6 @@ class SawyerCLI(object):
             self.table_pose = Pose(self.config.SIM.TABLE.POSE)
             self.table_pose.position.z += np.random.uniform(
                 *self.config.SIM.TABLE.HEIGHT_RANGE)
-            self.robot = sawyer.SawyerReal(config='configs/robots/sawyer.yaml')
             self.camera = Kinect2(
                     packet_pipeline_mode=0,
                     device_num=0,
@@ -234,6 +227,11 @@ class SawyerCLI(object):
 
         else:
             raise ValueError
+
+        # Set up the robot.
+        self.robot = sawyer.factory(
+                simulator=self.simulator,
+                config=self.config.SIM.ARM.CONFIG)
 
         # Start the camera camera.
         self.camera.set_calibration(

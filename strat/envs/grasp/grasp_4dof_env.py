@@ -98,6 +98,9 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         ]
 
         # Reward functions.
+        if self.simulator is None:
+            raise NotImplementedError(
+                    'Need to implement the real-world grasping reward.')
         reward_fns = [
                 GraspReward(
                         name='grasp_reward',

@@ -99,16 +99,11 @@ class ArmEnv(robot_env.RobotEnv):
 
     def reset_robot(self):
         """Reset the robot in simulation or the real world."""
-        if self.simulator:
-            self.robot = sawyer.SawyerSim(
-                    simulator=self.simulator,
-                    pose=self.config.SIM.ARM.POSE,
-                    joint_positions=self.config.ARM.OFFSTAGE_POSITIONS,
-                    config=self.config.SIM.ARM.CONFIG)
-        else:
-            self.robot = sawyer.SawyerReal(config='configs/robots/sawyer.yaml')
-            self.robot.move_to_joint_positions(
-                    self.config.ARM.OFFSTAGE_POSITIONS)
+        self.robot = sawyer.factory(
+                simulator=self.simulator,
+                config=self.config.SIM.ARM.CONFIG)
+        self.robot.move_to_joint_positions(
+                self.config.ARM.OFFSTAGE_POSITIONS)
 
     def reset_camera(self,
                      camera,

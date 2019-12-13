@@ -1,4 +1,4 @@
-"""The class of the Sawyer robot."""
+"""The base class of the Sawyer robot."""
 
 from __future__ import absolute_import
 from __future__ import division

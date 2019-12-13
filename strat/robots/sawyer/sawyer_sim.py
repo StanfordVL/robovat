@@ -32,7 +32,7 @@ class SawyerSim(sawyer.Sawyer):
             joint_positions: The list of initial joint positions.
             config: The configuartion as a dictionary.
         """
-        sawyer.Sawyer.__init__(self, config=config)
+        super(SawyerSim, self).__init__(config=config)
 
         self._simulator = simulator
 

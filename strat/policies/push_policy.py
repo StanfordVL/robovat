@@ -5,8 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import numpy as np
-
 from strat.envs.push import heuristic_push_sampler
 from strat.policies import policy
 
@@ -24,6 +22,7 @@ class HeuristicPushPolicy(policy.Policy):
             config: Policy configuration.
         """
         super(HeuristicPushPolicy, self).__init__(env, config)
+        config = self.config
         self._sampler = heuristic_push_sampler.HeuristicPushSampler(
                 cspace_low=config.ACTION.CSPACE.LOW,
                 cspace_high=config.ACTION.CSPACE.HIGH,
