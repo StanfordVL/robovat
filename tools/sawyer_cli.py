@@ -33,7 +33,7 @@ WELCOME = (
         'Command Line Interface\n'
         'Author: Kuan Fang\n'
 
-        'For now, please read the source code for instructions.'
+        'For now, please read the source code for instructions.\n'
         '############################################################\n'
         )
 
