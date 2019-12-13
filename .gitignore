@@ -1,9 +1,10 @@
 # Self-defined
-*.pyc
-*.pyv
 *.nfs*
 *.out
 *.json
+*.pyc
+*.pyv
+*.venv
 .python_history
 0_VRDemoSettings.txt
 
