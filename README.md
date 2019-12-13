@@ -98,6 +98,11 @@ Execute a planar pushing tasks with a heuristic policy:
 python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --debug 1
 ```
 
+To execute semantic pushing tasks, we can add bindings to the configurations:
+```bash
+python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --env_config strat/envs/configs/push_env.yaml --policy_config strat/policies/configs/heuristic_push_policy.yaml --config_bindings "{'TASK_NAME':'crossing','LAYOUT_ID':0}" --debug 1
+```
+
 ## Citation
 
 If you find this code useful for your research, please cite:

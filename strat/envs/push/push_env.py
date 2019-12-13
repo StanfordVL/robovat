@@ -57,11 +57,15 @@ class PushEnv(arm_env.ArmEnv):
         # Layout.
         assert self.config.LAYOUT_ID is not None
         self.layout_id = self.config.LAYOUT_ID
+
+        print(self.config.TASK_NAME)
+
         if self.config.TASK_NAME is None:
             self.layout_configs = None
         elif self.config.TASK_NAME == 'data_collection':
             self.layout_configs = None
         else:
+            print(self.config.TASK)
             capitalized_task_name = self.config.TASK_NAME.upper()
             layout_names = self.config.TASK[capitalized_task_name].LAYOUT_NAMES
             self.layout_configs = [
