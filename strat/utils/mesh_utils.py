@@ -6,17 +6,18 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
+from strat.utils.logging import logger
 
 
 def read_from_obj(filename):
-    """Read the mesh from an OBJ file.
+    """Read the mesh from an obj file.
 
-    Args: 
+    Args:
         filename: Path to the OBJ file.
 
     Returns:
-        vertices: Array of vertices.
-        triangles: Array of triangles.
+        vertices: Vertices of the object as an array..
+        triangles: Triangles of the object as an array..
     """
     vertices = []
     triangles = []
@@ -50,7 +51,7 @@ def read_from_obj(filename):
                                     pass
                     triangles.append(vi)
             except Exception as e:
-                print(e)
+                logger.warn(e)
                 pass
 
     triangles.reverse()
@@ -64,12 +65,12 @@ def read_from_obj(filename):
 def compute_volume(vertices, triangles):
     """Compute the volume of the mesh.
 
-    Args: 
-        vertices: Array of vertices.
-        triangles: Array of triangles.
+    Args:
+        vertices: Vertices of the object as an array..
+        triangles: Triangles of the object as an array..
 
     Returns:
-        total_volume: Volume of the object.
+        The total volume of the object. 
     """
     total_volume = 0.0
 
@@ -90,12 +91,12 @@ def compute_volume(vertices, triangles):
 def compute_surface_area(vertices, triangles):
     """Compute the surface area of the meash.
 
-    Args: 
-        vertices: Array of vertices.
-        triangles: Array of triangles.
+    Args:
+        vertices: Vertices of the object as an array..
+        triangles: Triangles of the object as an array..
 
     Returns:
-        total_volume: Surface area of the object.
+        The total surface area of the object. 
     """
     total_area = 0.0
 
@@ -112,12 +113,12 @@ def compute_surface_area(vertices, triangles):
 def compute_centroid(vertices, triangles):
     """Compute the centroid of the mesh.
 
-    Args: 
-        vertices: Array of vertices.
-        triangles: Array of triangles.
+    Args:
+        vertices: Vertices of the object as an array..
+        triangles: Triangles of the object as an array..
 
     Returns:
-        Centroid position of the object.
+        The centroid position of the object.
     """
     total_area = 0
     centroid = np.zeros((3))

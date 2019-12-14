@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<robot name="{body_name:s}">
+
+  <material name="color">
+    <color rgba="{rgba:s}"/>
+  </material>
+
+  <link name="base_link">
+
+    <contact>
+      <lateral_friction value="1.0"/>
+      <rolling_friction value="0.001"/>
+      <spinning_friction value="0.001"/>
+      <inertia_scaling value="1.0"/>
+    </contact>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="{cx:g} {cy:g} {cz:g}"/>
+       <mass value="{mass:g}"/>
+       <inertia ixx="{ixx:g}" ixy="{ixy:g}" ixz="{ixz:g}" iyy="{iyy:g}" iyz="{iyz:g}" izz="{izz:g}"/>
+    </inertial>
+
+{visual:s}
+{collision:s}
+  </link>
+
+</robot>
