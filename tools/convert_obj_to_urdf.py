@@ -17,19 +17,19 @@ from strat.utils.logging import logger
 # TODO(kuanfang): Temporally remove the V-HACD parameters for simplicity, will
 # add them back if we find the results are not as good.
 VHACD_COMMAND = (
-        './bin/vhacd'
-        ' --input {input_path:s}'
-        ' --output {output_path:s}'
-        # ' --concavity 0.0025'
-        ' --log {log_path:s}'
-        )
+    './bin/vhacd'
+    ' --input {input_path:s}'
+    ' --output {output_path:s}'
+    # ' --concavity 0.0025'
+    ' --log {log_path:s}'
+    )
 
 
 MESHCONV_COMMAND = (
-        './bin/meshconv -c obj -tri '
-        ' -o {output_path:s}'
-        ' {input_path:s}'
-        )
+    './bin/meshconv -c obj -tri '
+    ' -o {output_path:s}'
+    ' {input_path:s}'
+    )
 
 
 def parse_args():
@@ -39,8 +39,8 @@ def parse_args():
         args: The parsed arguments.
     """
     parser = argparse.ArgumentParser(
-            description='Convert an obj 3D Description file '
-                        'into a urdf file with collision convex meshes.')
+        description='Convert an obj 3D Description file '
+                    'into a urdf file with collision convex meshes.')
 
     parser.add_argument('--input',
                         dest='input_pattern',
@@ -121,9 +121,9 @@ def run_convex_decomposition(input_path,
     # TODO(kuanfang): Temporally remove the constraints of number of groups for
     # simplicity, will add it back if we find it necessary in the future.
     command = VHACD_COMMAND.format(
-            input_path=input_path,
-            output_path=output_path,
-            log_path=log_path)
+        input_path=input_path,
+        output_path=output_path,
+        log_path=log_path)
     logger.info(command)
     os.system(command)
 
@@ -182,7 +182,7 @@ def convert_wrl_to_obj(wrl_paths, output_dir, body_name=''):
         obj_path = os.path.join(output_dir, basename)
 
         command = MESHCONV_COMMAND.format(
-                input_path=wrl_path, output_path=obj_path)
+            input_path=wrl_path, output_path=obj_path)
         logger.info(command)
         os.system(command)
 
@@ -201,7 +201,7 @@ def random_rgba(a=1.0):
     r = np.random.uniform(0.0, 1.0)
     g = np.random.uniform(0.0, 1.0)
     b = np.random.uniform(0.0, 1.0)
-    
+
     if a is None:
         a = np.random.uniform(0.0, 1.0)
 
@@ -209,10 +209,10 @@ def random_rgba(a=1.0):
 
 
 def process_object(input_path,
-                   output_dir, 
-                   rgba, 
+                   output_dir,
+                   rgba,
                    scale=1.0,
-                   mass=0.1, 
+                   mass=0.1,
                    density=None):
     """Process a single object.
 
@@ -308,8 +308,8 @@ def process_object(input_path,
     collision_text = ''
     for vhacd_filename in vhacd_filenames:
         collision_text += collision_template.format(
-                filename=vhacd_filename,
-                scale=scale)
+            filename=vhacd_filename,
+            scale=scale)
 
     if rgba is None:
         rgba = random_rgba()
@@ -320,20 +320,20 @@ def process_object(input_path,
 
     with open(urdf_path, 'w') as f:
         urdf_text = urdf_template.format(
-                body_name=body_name,
-                mass=mass,
-                ixx=1,
-                iyy=1,
-                izz=1,
-                ixy=0,
-                ixz=0,
-                iyz=0,
-                cx=centroid[0],
-                cy=centroid[1],
-                cz=centroid[2],
-                visual=visual_text,
-                collision=collision_text,
-                rgba=rgba)
+            body_name=body_name,
+            mass=mass,
+            ixx=1,
+            iyy=1,
+            izz=1,
+            ixy=0,
+            ixz=0,
+            iyz=0,
+            cx=centroid[0],
+            cy=centroid[1],
+            cz=centroid[2],
+            visual=visual_text,
+            collision=collision_text,
+            rgba=rgba)
 
         f.write(urdf_text)
 
@@ -384,15 +384,15 @@ def create_urdf(input_path, output_dir, rgba, scale=1.0, mass=0.1):
     with open('./tools/templates/visual_template.xml', 'r') as f:
         visual_template = f.read()
         visual_text = visual_template.format(
-                filename=body_path,
-                scale=scale)
+            filename=body_path,
+            scale=scale)
 
     # Create the collision meshes.
     with open('./tools/templates/collision_template.xml', 'r') as f:
         collision_template = f.read()
         collision_text = collision_template.format(
-                filename=body_path,
-                scale=scale)
+            filename=body_path,
+            scale=scale)
 
     if rgba is None:
         rgba = random_rgba()
@@ -403,20 +403,20 @@ def create_urdf(input_path, output_dir, rgba, scale=1.0, mass=0.1):
 
     with open(urdf_path, 'w') as f:
         urdf_text = urdf_template.format(
-                body_name=body_name,
-                mass=mass,
-                ixx=1,
-                iyy=1,
-                izz=1,
-                ixy=0,
-                ixz=0,
-                iyz=0,
-                cx=centroid[0],
-                cy=centroid[1],
-                cz=centroid[2],
-                visual=visual_text,
-                collision=collision_text,
-                rgba=rgba)
+            body_name=body_name,
+            mass=mass,
+            ixx=1,
+            iyy=1,
+            izz=1,
+            ixy=0,
+            ixz=0,
+            iyz=0,
+            cx=centroid[0],
+            cy=centroid[1],
+            cz=centroid[2],
+            visual=visual_text,
+            collision=collision_text,
+            rgba=rgba)
 
         f.write(urdf_text)
 

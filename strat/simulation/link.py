@@ -59,8 +59,7 @@ class Link(Entity):
                      mass=None,
                      lateral_friction=None,
                      rolling_friction=None,
-                     spinning_friction=None,
-                     ):
+                     spinning_friction=None):
         """Set dynmamics.
 
         Args:
@@ -70,9 +69,9 @@ class Link(Entity):
             spinning_friction: The spinning friction coefficient.
         """
         return self.physics.set_link_dynamics(
-                self.uid,
-                mass=mass,
-                lateral_friction=lateral_friction,
-                rolling_friction=rolling_friction,
-                spinning_friction=rolling_friction,
-                )
+            self.uid,
+            mass=mass,
+            lateral_friction=lateral_friction,
+            rolling_friction=rolling_friction,
+            spinning_friction=rolling_friction,
+        )

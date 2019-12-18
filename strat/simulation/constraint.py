@@ -36,12 +36,12 @@ class Constraint(Base):
         child_uid = child.uid if child is not None else None
 
         self._uid = self.physics.add_constraint(
-                 parent_uid,
-                 child_uid,
-                 joint_type,
-                 joint_axis,
-                 parent_frame_pose,
-                 child_frame_pose)
+                parent_uid,
+                child_uid,
+                joint_type,
+                joint_axis,
+                parent_frame_pose,
+                child_frame_pose)
 
         self._parent = parent
         self._child = child
@@ -52,7 +52,7 @@ class Constraint(Base):
 
         if name is None:
             name = '%s_constraint_(%s)_(%s)_%s' % (
-                    joint_type, parent.name, child.name, self.uid)
+                joint_type, parent.name, child.name, self.uid)
 
     @property
     def parent(self):

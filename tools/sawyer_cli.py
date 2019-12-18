@@ -29,19 +29,19 @@ from strat.utils.logging import logger
 
 
 WELCOME = (
-        '############################################################\n'
-        'Command Line Interface\n'
-        'Author: Kuan Fang\n'
+    '############################################################\n'
+    'Command Line Interface\n'
+    'Author: Kuan Fang\n'
 
-        'For now, please read the source code for instructions.\n'
-        '############################################################\n'
-        )
+    'For now, please read the source code for instructions.\n'
+    '############################################################\n'
+    )
 
 HELP = {
-        '############################################################\n'
-        'Help'
-        '############################################################\n'
-        }
+    '############################################################\n'
+    'Help'
+    '############################################################\n'
+    }
 
 
 CLICK_Z = 0.2
@@ -87,7 +87,7 @@ def parse_args():
     return args
 
 
-class EndEffectorClickController(object): 
+class EndEffectorClickController(object):
     """Controller of the end effector by mouse clicking."""
 
     def __init__(self, cli, ax, eef_z=0.2):
@@ -96,7 +96,7 @@ class EndEffectorClickController(object):
         Args:
             cli: The command line interface.
             ax: An instance of the Matplotlib Axes.
-            eef_z: Z position of the end effector. 
+            eef_z: Z position of the end effector.
         """
         self.cli = cli
         self.image = None
@@ -156,8 +156,8 @@ class SawyerCLI(object):
 
     def __init__(self,
                  mode,
-                 config, 
-                 debug, 
+                 config,
+                 debug,
                  assets_dir):
         """Initialize.
 

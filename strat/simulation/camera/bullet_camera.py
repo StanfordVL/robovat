@@ -107,9 +107,9 @@ def extrinsic_to_view_matrix(translation, rotation, distance):
 
     # Compute the view matrix.
     view_matrix = pybullet.computeViewMatrix(
-                cameraEyePosition=camera_position,
-                cameraTargetPosition=focus,
-                cameraUpVector=up_vector)
+        cameraEyePosition=camera_position,
+        cameraTargetPosition=focus,
+        cameraUpVector=up_vector)
 
     return view_matrix
 
@@ -196,11 +196,11 @@ class BulletCamera(Camera):
                 [width, height].
         """
         _, _, rgba, depth, segmask = pybullet.getCameraImage(
-                        height=self._render_height,
-                        width=self._render_width,
-                        viewMatrix=self._view_matrix,
-                        projectionMatrix=self._projection_matrix,
-                        physicsClientId=self.simulator.physics.uid)
+            height=self._render_height,
+            width=self._render_width,
+            viewMatrix=self._view_matrix,
+            projectionMatrix=self._projection_matrix,
+            physicsClientId=self.simulator.physics.uid)
 
         rgba = np.array(rgba).astype('uint8')
         rgba = rgba.reshape((self._render_height, self._render_width, 4))
@@ -229,10 +229,10 @@ class BulletCamera(Camera):
         depth = z_e
 
         return {
-                'rgb': rgb,
-                'depth': depth,
-                'segmask': segmask,
-                }
+            'rgb': rgb,
+            'depth': depth,
+            'segmask': segmask,
+        }
 
     def set_calibration(self, intrinsics, translation, rotation):
         """Set the camera calibration data.
@@ -245,14 +245,14 @@ class BulletCamera(Camera):
         if intrinsics is not None:
             intrinsics = np.array(intrinsics).reshape((3, 3))
             self._projection_matrix = intrinsic_to_projection_matrix(
-                    intrinsics, self._render_height, self._render_width,
-                    self._near, self._far)
+                intrinsics, self._render_height, self._render_width,
+                self._near, self._far)
 
         if translation is not None and rotation is not None:
             translation = np.array(translation).reshape((3,))
             rotation = Orientation(rotation).matrix3
             self._view_matrix = extrinsic_to_view_matrix(
-                    translation, rotation, self._distance)
+                translation, rotation, self._distance)
 
         super(BulletCamera, self).set_calibration(
-                intrinsics, translation, rotation)
+            intrinsics, translation, rotation)

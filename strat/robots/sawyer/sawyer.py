@@ -73,8 +73,8 @@ class Sawyer(robot.Robot):
             pose: The target gripper pose, as a tuple or an instance of Pose.
             speed: The maximum joint velocity.
             timeout: Seconds to wait for move to finish.
-            threshold: Position threshold in radians across each joint when move
-                is considered successful.
+            threshold: Position threshold in radians across each joint when
+                move is considered successful.
         """
         pass
 

@@ -8,7 +8,7 @@ import numpy as np
 import scipy.misc
 import scipy.stats
 
-from strat.perception import image_utils 
+from strat.perception import image_utils
 
 
 transform = image_utils.transform
@@ -39,9 +39,9 @@ def inpaint(data, rescale_factor=0.5):
 
     while np.any(zeros):
         neighbors = scipy.signal.convolve2d(
-                (cur_data != 0), inpaint_kernel, mode='same', boundary='symm')
+            (cur_data != 0), inpaint_kernel, mode='same', boundary='symm')
         avg_depth = scipy.signal.convolve2d(
-                cur_data, inpaint_kernel, mode='same', boundary='symm')
+            cur_data, inpaint_kernel, mode='same', boundary='symm')
         avg_depth[neighbors > 0] = (avg_depth[neighbors > 0] /
                                     neighbors[neighbors > 0])
         avg_depth[neighbors == 0] = 0
@@ -64,7 +64,7 @@ def inpaint(data, rescale_factor=0.5):
 
 def threshold_gradients(data, threshold):
     """Get the threshold gradients.
-    
+
     Creates a new DepthImage by zeroing out all depths
     where the magnitude of the gradient at that point is
     greater than threshold.

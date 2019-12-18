@@ -59,13 +59,13 @@ class ArmEnv(robot_env.RobotEnv):
         """
         if self.simulator:
             camera = BulletCamera(
-                    simulator=self.simulator,
-                    height=height,
-                    width=width)
+                simulator=self.simulator,
+                height=height,
+                width=width)
         else:
             camera = Kinect2(
-                    height=height,
-                    width=width)
+                height=height,
+                width=width)
 
         intrinsics = np.copy(intrinsics).astype(np.float32)
         translation = np.copy(translation).astype(np.float32)
@@ -78,7 +78,7 @@ class ArmEnv(robot_env.RobotEnv):
         """Reset the scene in simulation or the real world."""
         self.table_pose = Pose(self.config.SIM.TABLE.POSE)
         self.table_pose.position.z += np.random.uniform(
-            *self.config.SIM.TABLE.HEIGHT_RANGE)
+            *self.config.TABLE.HEIGHT_RANGE)
 
         if self.simulator:
             self.ground = self.simulator.add_body(self.config.SIM.GROUND.PATH,
@@ -100,10 +100,10 @@ class ArmEnv(robot_env.RobotEnv):
     def reset_robot(self):
         """Reset the robot in simulation or the real world."""
         self.robot = sawyer.factory(
-                simulator=self.simulator,
-                config=self.config.SIM.ARM.CONFIG)
+            simulator=self.simulator,
+            config=self.config.SIM.ARM.CONFIG)
         self.robot.move_to_joint_positions(
-                self.config.ARM.OFFSTAGE_POSITIONS)
+            self.config.ARM.OFFSTAGE_POSITIONS)
 
     def reset_camera(self,
                      camera,
@@ -135,17 +135,17 @@ class ArmEnv(robot_env.RobotEnv):
         if self.simulator:
             if intrinsics_noise is not None:
                 intrinsics += np.random.uniform(
-                        -np.array(intrinsics_noise),
-                        np.array(intrinsics_noise))
+                    -np.array(intrinsics_noise),
+                    np.array(intrinsics_noise))
 
             if translation_noise is not None:
                 translation += np.random.uniform(
-                        -np.array(translation_noise),
-                        np.array(translation_noise))
+                    -np.array(translation_noise),
+                    np.array(translation_noise))
 
             if rotation_noise is not None:
                 rotation += np.random.uniform(
-                        -np.array(rotation_noise),
-                        np.array(rotation_noise))
+                    -np.array(rotation_noise),
+                    np.array(rotation_noise))
 
         camera.set_calibration(intrinsics, translation, rotation)

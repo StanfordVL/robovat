@@ -43,7 +43,8 @@ class Pose(object):
         elif index == 1:
             return self.orientation
         else:
-            raise ValueError('The index of a Pose instance can only be 0 or 1.')
+            raise ValueError(
+                'The index of a Pose instance can only be 0 or 1.')
 
     @property
     def pose(self):

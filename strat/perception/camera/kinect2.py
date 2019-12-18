@@ -11,8 +11,8 @@ import numpy as np
 try:
     import pylibfreenect2 as lf2
 except ImportError:
-    logging.warning('Unable to import pylibfreenect2. Python-only Kinect driver'
-                    'may not work properly.')
+    logging.warning('Unable to import pylibfreenect2. Python-only Kinect '
+                    'driver may not work properly.')
 
 from strat.perception import image_utils
 from strat.perception import depth_utils
@@ -98,7 +98,7 @@ class Kinect2(Camera):
         self._skip_registration = skip_registration
         self._use_inpaint = use_inpaint
 
-        # TODO(kuanfang): Why do we need to rotate real-world Kinect2 images?
+        # TODO: Why do we need to rotate real-world Kinect2 images in pybullet?
         self._upside_down = upside_down
 
         super(Kinect2, self).__init__(
@@ -167,8 +167,8 @@ class Kinect2(Camera):
         if self._registration_mode == Kinect2RegistrationMode.COLOR_TO_DEPTH:
             logging.debug('Using color to depth registration')
             self._registration = lf2.Registration(
-                    self._device.getIrCameraParams(),
-                    self._device.getColorCameraParams())
+                self._device.getIrCameraParams(),
+                self._device.getColorCameraParams())
 
         self._running = True
 
@@ -223,10 +223,13 @@ class Kinect2(Camera):
         if not self._skip_registration and (
                 self._registration_mode ==
                 Kinect2RegistrationMode.COLOR_TO_DEPTH):
-            depth = lf2.Frame(depth.width, depth.height, 4, lf2.FrameType.Depth)
-            color = lf2.Frame(depth.width, depth.height, 4, lf2.FrameType.Color)
-            self._registration.apply(unregistered_color, distorted_depth, depth,
-                                     color, color_depth_map=color_depth_map)
+            depth = lf2.Frame(
+                depth.width, depth.height, 4, lf2.FrameType.Depth)
+            color = lf2.Frame(
+                depth.width, depth.height, 4, lf2.FrameType.Color)
+            self._registration.apply(
+                unregistered_color, distorted_depth, depth, color,
+                color_depth_map=color_depth_map)
 
         # Convert to array (copy needed to prevent reference of deleted data).
         rgba = copy.copy(color.asarray())
@@ -251,16 +254,16 @@ class Kinect2(Camera):
 
         if self._use_inpaint:
             rgb = image_utils.inpaint(
-                    rgb, rescale_factor=INPAINT_RESCALE_FACTOR)
+                rgb, rescale_factor=INPAINT_RESCALE_FACTOR)
             depth = depth_utils.inpaint(
-                    depth, rescale_factor=INPAINT_RESCALE_FACTOR)
+                depth, rescale_factor=INPAINT_RESCALE_FACTOR)
 
         if self._upside_down:
             rgb = rgb[::-1, ::-1, :]
             depth = depth[::-1, ::-1]
 
         return {
-                'rgb': rgb,
-                'depth': depth,
-                'segmask': None,
-                }
+            'rgb': rgb,
+            'depth': depth,
+            'segmask': None,
+        }

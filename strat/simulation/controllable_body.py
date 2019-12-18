@@ -297,7 +297,7 @@ class ControllableBody(Body):
             velocities,
             timeout=timeout,
             position_threshold=threshold)
-        
+
     def set_target_link_pose(self,
                              link_ind,
                              link_pose,
@@ -456,12 +456,12 @@ class ControllableBody(Body):
     def _update_position_control(self):
         """Update the position control."""
         self.physics.position_control_array(
-                self.uid,
-                self._joint_target.indices,
-                target_positions=self._joint_target.positions,
-                target_velocities=self._joint_target.velocities,
-                position_gains=self._joint_target.position_gains,
-                velocity_gains=self._joint_target.velocity_gains)
+            self.uid,
+            self._joint_target.indices,
+            target_positions=self._joint_target.positions,
+            target_velocities=self._joint_target.velocities,
+            position_gains=self._joint_target.position_gains,
+            velocity_gains=self._joint_target.velocity_gains)
 
     def _update_ik(self):
         """Update the inverse kinematics results.
@@ -471,9 +471,9 @@ class ControllableBody(Body):
 
         # Computer IK.
         positions = self.physics.compute_inverse_kinematics(
-                self._link_target.link.uid,
-                self._link_target.pose,
-                neutral_positions=self._neutral_joint_positions)
+            self._link_target.link.uid,
+            self._link_target.pose,
+            neutral_positions=self._neutral_joint_positions)
 
         # TODO: Bullet IK results include irrelevant joints, which can cause
         # problems for some URDF models.
@@ -526,7 +526,8 @@ class ControllableBody(Body):
                 current_velocity = self.joint_velocities[ind]
                 delta_velocity = target_velocity - current_velocity
                 velocity_reached = (
-                    abs(delta_velocity) < self._joint_target.velocity_threshold)
+                    abs(delta_velocity) < self._joint_target.velocity_threshold
+                )
 
             if not (position_reached and velocity_reached):
                 return False

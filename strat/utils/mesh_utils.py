@@ -70,7 +70,7 @@ def compute_volume(vertices, triangles):
         triangles: Triangles of the object as an array..
 
     Returns:
-        The total volume of the object. 
+        The total volume of the object.
     """
     total_volume = 0.0
 
@@ -96,7 +96,7 @@ def compute_surface_area(vertices, triangles):
         triangles: Triangles of the object as an array..
 
     Returns:
-        The total surface area of the object. 
+        The total surface area of the object.
     """
     total_area = 0.0
 

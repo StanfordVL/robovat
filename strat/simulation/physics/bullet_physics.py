@@ -18,11 +18,11 @@ from strat.utils.logging import logger
 
 
 JOINT_TYPES_MAPPING = {
-        'revolute': pybullet.JOINT_REVOLUTE,
-        'prismatic': pybullet.JOINT_PRISMATIC,
-        'fixed': pybullet.JOINT_FIXED,
-        'point2point': pybullet.JOINT_POINT2POINT
-        }
+    'revolute': pybullet.JOINT_REVOLUTE,
+    'prismatic': pybullet.JOINT_PRISMATIC,
+    'fixed': pybullet.JOINT_FIXED,
+    'point2point': pybullet.JOINT_POINT2POINT
+}
 
 
 class BulletPhysics(physics.Physics):
@@ -36,8 +36,8 @@ class BulletPhysics(physics.Physics):
         Initialization function.
 
         Args:
-            time_step: The time step of the simulation. Run real-time simulation
-                if it is set to None.
+            time_step: The time step of the simulation. Run real-time
+                simulation if it is set to None.
             use_visualizer: If use the visualizer.
             worker_id: The key of the simulation client.
         """
@@ -169,14 +169,14 @@ class BulletPhysics(physics.Physics):
             # problems for the motor control in Bullet.
             pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 0)
             body_uid = pybullet.loadURDF(
-                    fileName=filename,
-                    basePosition=position,
-                    baseOrientation=quaternion,
-                    globalScaling=scale,
-                    useFixedBase=is_static,
-                    physicsClientId=self.uid,
-                    flags=pybullet.URDF_USE_SELF_COLLISION_EXCLUDE_PARENT,
-                    )
+                fileName=filename,
+                basePosition=position,
+                baseOrientation=quaternion,
+                globalScaling=scale,
+                useFixedBase=is_static,
+                physicsClientId=self.uid,
+                flags=pybullet.URDF_USE_SELF_COLLISION_EXCLUDE_PARENT,
+                )
             pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
         else:
             raise ValueError('Unrecognized extension %s.' % ext)
@@ -217,7 +217,7 @@ class BulletPhysics(physics.Physics):
             A 3-dimensional float32 numpy array.
         """
         position, _ = pybullet.getBasePositionAndOrientation(
-                bodyUniqueId=body_uid, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, physicsClientId=self.uid)
         return np.array(position, dtype=np.float32)
 
     def get_body_linear_velocity(self, body_uid):
@@ -230,7 +230,7 @@ class BulletPhysics(physics.Physics):
             A 3-dimensional float32 numpy array.
         """
         linear_velocity, _ = pybullet.getBaseVelocity(
-                bodyUniqueId=body_uid, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, physicsClientId=self.uid)
         return np.array(linear_velocity, dtype=np.float32)
 
     def get_body_angular_velocity(self, body_uid):
@@ -243,7 +243,7 @@ class BulletPhysics(physics.Physics):
             A 3-dimensional float32 numpy array.
         """
         _, angular_velocity = pybullet.getBaseVelocity(
-                bodyUniqueId=body_uid, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, physicsClientId=self.uid)
         return np.array(angular_velocity, dtype=np.float32)
 
     def get_body_mass(self, body_uid):
@@ -256,7 +256,7 @@ class BulletPhysics(physics.Physics):
             A 3-dimensional float32 numpy array.
         """
         mass, _, _, _, _, _, _, _, _, _ = pybullet.getDynamicsInfo(
-                bodyUniqueId=body_uid, linkIndex=-1, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=-1, physicsClientId=self.uid)
         return mass
 
     def get_body_dynamics(self, body_uid):
@@ -270,13 +270,13 @@ class BulletPhysics(physics.Physics):
         """
         (mass, lateral_friction, _, _, _, _,
          rolling_friction, spinning_friction, _, _) = pybullet.getDynamicsInfo(
-                bodyUniqueId=body_uid, linkIndex=-1, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=-1, physicsClientId=self.uid)
         return {
-                'mass': mass,
-                'lateral_friction': lateral_friction,
-                'rolling_friction': rolling_friction,
-                'spinning_friction': spinning_friction,
-                }
+            'mass': mass,
+            'lateral_friction': lateral_friction,
+            'rolling_friction': rolling_friction,
+            'spinning_friction': spinning_friction,
+        }
 
     def get_body_link_indices(self, body_uid):
         """Get the indices of the links of a body.
@@ -288,7 +288,7 @@ class BulletPhysics(physics.Physics):
             A list of integers.
         """
         num_joints = pybullet.getNumJoints(
-                bodyUniqueId=body_uid, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, physicsClientId=self.uid)
         link_indices = range(num_joints)
         return link_indices
 
@@ -302,7 +302,7 @@ class BulletPhysics(physics.Physics):
             A list of integers.
         """
         num_joints = pybullet.getNumJoints(
-                bodyUniqueId=body_uid, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, physicsClientId=self.uid)
         joint_indices = range(num_joints)
         return joint_indices
 
@@ -317,22 +317,22 @@ class BulletPhysics(physics.Physics):
         position = list(pose.position)
         quaternion = list(pose.quaternion)
         pybullet.resetBasePositionAndOrientation(
-                bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
+            physicsClientId=self.uid)
 
     def set_body_position(self, body_uid, position):
         """Set the position of the body.
 
         Args:
             body_uid: The body Unique ID.
-            position: A 3-dimensional float32 numpy array or a list of 3 float32
-                values.
+            position: A 3-dimensional float32 numpy array or a list of 3
+                float32 values.
         """
         position = list(position)
         _, quaternion = pybullet.getBasePositionAndOrientation(body_uid)
         pybullet.resetBasePositionAndOrientation(
-                bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
+            physicsClientId=self.uid)
 
     def set_body_orientation(self, body_uid, orientation):
         """Set the orientation of the body.
@@ -344,8 +344,8 @@ class BulletPhysics(physics.Physics):
         position, _ = pybullet.getBasePositionAndOrientation(body_uid)
         quaternion = list(orientation.quaternion)
         pybullet.resetBasePositionAndOrientation(
-                bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, posObj=position, ornObj=quaternion,
+            physicsClientId=self.uid)
 
     def set_body_linear_velocity(self, body_uid, linear_velocity):
         """Set the linear velocity of the body.
@@ -357,21 +357,21 @@ class BulletPhysics(physics.Physics):
         """
         linear_velocity = list(linear_velocity)
         pybullet.resetBaseVelocity(
-                bodyUniqueId=body_uid, linearVelocity=linear_velocity,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linearVelocity=linear_velocity,
+            physicsClientId=self.uid)
 
     def set_body_angular_velocity(self, body_uid, angular_velocity):
         """Set the angular velocity of the body.
 
         Args:
             body_uid: The body Unique ID.
-            angular_velocity: A 3-dimensional float32 numpy array or a list of 3
-                float32 values.
+            angular_velocity: A 3-dimensional float32 numpy array or a list of
+                3 float32 values.
         """
         angular_velocity = list(angular_velocity)
         pybullet.resetBaseVelocity(
-                bodyUniqueId=body_uid, angularVelocity=angular_velocity,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, angularVelocity=angular_velocity,
+            physicsClientId=self.uid)
 
     def set_body_mass(self, body_uid, mass):
         """Set the mass of the body.
@@ -381,16 +381,15 @@ class BulletPhysics(physics.Physics):
             mass: A float32 value.
         """
         pybullet.changeDynamics(
-                bodyUniqueId=body_uid, linkIndex=-1, mass=mass,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=-1, mass=mass,
+            physicsClientId=self.uid)
 
     def set_body_dynamics(self,
                           body_uid,
                           mass=None,
                           lateral_friction=None,
                           rolling_friction=None,
-                          spinning_friction=None,
-                          ):
+                          spinning_friction=None):
         """Set the dynamics of the body.
 
         Args:
@@ -451,9 +450,9 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, link_ind = link_uid
         _, _, _, _, _, _, _, _, _, _, _, _, link_name, _, _, _, _ = (
-                pybullet.getJointInfo(bodyUniqueId=body_uid,
-                                      jointIndex=link_ind,
-                                      physicsClientId=self.uid))
+            pybullet.getJointInfo(bodyUniqueId=body_uid,
+                                  jointIndex=link_ind,
+                                  physicsClientId=self.uid))
         return link_name
 
     def get_link_pose(self, link_uid):
@@ -467,8 +466,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, link_ind = link_uid
         _, _, _, _, position, quaternion = pybullet.getLinkState(
-                bodyUniqueId=body_uid, linkIndex=link_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=link_ind,
+            physicsClientId=self.uid)
         return Pose([position, quaternion])
 
     def get_link_center_of_mass(self, link_uid):
@@ -482,8 +481,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, link_ind = link_uid
         position, quaternion, _, _, _, _ = pybullet.getLinkState(
-                bodyUniqueId=body_uid, linkIndex=link_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=link_ind,
+            physicsClientId=self.uid)
         return Pose([position, quaternion])
 
     def get_link_mass(self, link_uid):
@@ -498,8 +497,8 @@ class BulletPhysics(physics.Physics):
         raise NotImplementedError('This is still buggy in PyBullet.')
         body_uid, link_ind = link_uid
         mass, _, _, _, _, _, _, _, _, _ = pybullet.getDynamicsInfo(
-                bodyUniqueId=body_uid, linkIndex=link_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=link_ind,
+            physicsClientId=self.uid)
         return mass
 
     def get_link_dynamics(self, link_uid):
@@ -514,14 +513,14 @@ class BulletPhysics(physics.Physics):
         body_uid, link_ind = link_uid
         (mass, lateral_friction, _, _, _, _,
          rolling_friction, spinning_friction, _, _) = pybullet.getDynamicsInfo(
-                bodyUniqueId=body_uid, linkIndex=link_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=link_ind,
+            physicsClientId=self.uid)
         return {
-                'mass': mass,
-                'lateral_friction': lateral_friction,
-                'rolling_friction': rolling_friction,
-                'spinning_friction': spinning_friction,
-                }
+            'mass': mass,
+            'lateral_friction': lateral_friction,
+            'rolling_friction': rolling_friction,
+            'spinning_friction': spinning_friction,
+        }
 
     def set_link_mass(self, link_uid, mass):
         """Set the mass of the link.
@@ -533,8 +532,8 @@ class BulletPhysics(physics.Physics):
         raise NotImplementedError('This is still buggy in PyBullet.')
         body_uid, link_ind = link_uid
         pybullet.changeDynamics(
-                bodyUniqueId=body_uid, linkIndex=link_ind, mass=mass,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, linkIndex=link_ind, mass=mass,
+            physicsClientId=self.uid)
 
     def set_link_dynamics(self,
                           link_uid,
@@ -584,9 +583,9 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         _, joint_name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = (
-                pybullet.getJointInfo(bodyUniqueId=body_uid,
-                                      jointIndex=joint_ind,
-                                      physicsClientId=self.uid))
+            pybullet.getJointInfo(bodyUniqueId=body_uid,
+                                  jointIndex=joint_ind,
+                                  physicsClientId=self.uid))
         return joint_name
 
     def get_joint_dynamics(self, joint_uid):
@@ -600,13 +599,13 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         _, _, _, _, _, _, damping, friction, _, _, _, _, _, _, _, _ = (
-                pybullet.getJointInfo(bodyUniqueId=body_uid,
-                                      jointIndex=joint_ind,
-                                      physicsClientId=self.uid))
+            pybullet.getJointInfo(bodyUniqueId=body_uid,
+                                  jointIndex=joint_ind,
+                                  physicsClientId=self.uid))
         dynamics = {
-                'damping': damping,
-                'friction': friction
-                }
+            'damping': damping,
+            'friction': friction
+        }
         return dynamics
 
     def get_joint_limit(self, joint_uid):
@@ -624,11 +623,11 @@ class BulletPhysics(physics.Physics):
                                              jointIndex=joint_ind,
                                              physicsClientId=self.uid)
         limit = {
-                'lower': lower,
-                'upper': upper,
-                'effort': max_force,
-                'velocity': max_vel
-                }
+            'lower': lower,
+            'upper': upper,
+            'effort': max_force,
+            'velocity': max_vel
+        }
         return limit
 
     def get_joint_position(self, joint_uid):
@@ -642,8 +641,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         position, _, _, _ = pybullet.getJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            physicsClientId=self.uid)
         return position
 
     def get_joint_velocity(self, joint_uid):
@@ -657,8 +656,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         _, vel, _, _ = pybullet.getJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            physicsClientId=self.uid)
         return vel
 
     def get_joint_reaction_force(self, joint_uid):
@@ -676,8 +675,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         _, _, reaction_force, _ = pybullet.getJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            physicsClientId=self.uid)
         return np.array(reaction_force, dtype=np.float32)
 
     def get_joint_torque(self, joint_uid):
@@ -693,8 +692,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         _, _, _, torque = pybullet.getJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            physicsClientId=self.uid)
         return np.array(torque, dtype=np.float32)
 
     def set_joint_position(self, joint_uid, position):
@@ -706,8 +705,8 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         pybullet.resetJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                targetValue=position, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            targetValue=position, physicsClientId=self.uid)
 
     def set_joint_velocity(self, joint_uid, velocity):
         """Set the position of the joint.
@@ -720,12 +719,12 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         position, _, _, _ = pybullet.getJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            physicsClientId=self.uid)
         pybullet.resetJointState(
-                bodyUniqueId=body_uid, jointIndex=joint_ind,
-                targetValue=position,
-                targetVelocity=velocity, physicsClientId=self.uid)
+            bodyUniqueId=body_uid, jointIndex=joint_ind,
+            targetValue=position,
+            targetVelocity=velocity, physicsClientId=self.uid)
 
     def enable_joint_sensor(self, joint_uid):
         """Enable joint force torque sensor.
@@ -735,10 +734,10 @@ class BulletPhysics(physics.Physics):
         """
         body_uid, joint_ind = joint_uid
         pybullet.enableJointForceTorqueSensor(
-                bodyUniqueId=body_uid,
-                jointIndex=joint_ind,
-                enableSensor=1,
-                physicsClientId=self.uid)
+            bodyUniqueId=body_uid,
+            jointIndex=joint_ind,
+            enableSensor=1,
+            physicsClientId=self.uid)
 
     #
     # Constraint
@@ -912,10 +911,10 @@ class BulletPhysics(physics.Physics):
         quaternion = list(pose.quaternion)
 
         pybullet.changeConstraint(
-                userConstraintUniqueId=constraint_uid,
-                jointChildPivot=position,
-                jointChildFrameOrientation=quaternion,
-                physicsClientId=self.uid)
+            userConstraintUniqueId=constraint_uid,
+            jointChildPivot=position,
+            jointChildFrameOrientation=quaternion,
+            physicsClientId=self.uid)
 
     def set_constraint_position(self, constraint_uid, position):
         """Set the constraint position.
@@ -926,9 +925,9 @@ class BulletPhysics(physics.Physics):
         """
         position = list(position)
         pybullet.changeConstraint(
-                userConstraintUniqueId=constraint_uid,
-                jointChildPivot=position,
-                physicsClientId=self.uid)
+            userConstraintUniqueId=constraint_uid,
+            jointChildPivot=position,
+            physicsClientId=self.uid)
 
     def set_constraint_orientation(self, constraint_uid, orientation):
         """Set the constraint orientation.
@@ -939,9 +938,9 @@ class BulletPhysics(physics.Physics):
         """
         quaternion = list(orientation.quaternion)
         pybullet.changeConstraint(
-                userConstraintUniqueId=constraint_uid,
-                jointChildFrameOrientation=quaternion,
-                physicsClientId=self.uid)
+            userConstraintUniqueId=constraint_uid,
+            jointChildFrameOrientation=quaternion,
+            physicsClientId=self.uid)
 
     def set_constraint_max_force(self, constraint_uid, max_force):
         """Set the maximal force of the constraint.
@@ -951,9 +950,9 @@ class BulletPhysics(physics.Physics):
             max_force: A 3-dimensional float32 numpy array.
         """
         pybullet.changeConstraint(
-                userConstraintUniqueId=constraint_uid,
-                maxForce=max_force,
-                physicsClientId=self.uid)
+            userConstraintUniqueId=constraint_uid,
+            maxForce=max_force,
+            physicsClientId=self.uid)
 
     #
     # Motor Control
@@ -1116,7 +1115,8 @@ class BulletPhysics(physics.Physics):
             joint_inds: The list of joint indices.
             joint_velocities: The list of joint velocities for each specified
                 joint.
-            max_joint_forces: The list of maximal forces, set to None to ignore.
+            max_joint_forces: The list of maximal forces, set to None to
+                ignore.
             position_gains: The list of position gains, set to None to ignore.
             velocity_gains: The list of position gains, set to None to ignore.
         """
@@ -1158,41 +1158,41 @@ class BulletPhysics(physics.Physics):
 
     def apply_force_to_body(self, uid, force, position):
         pybullet.applyExternalForce(
-                objectUniqueId=uid,
-                linkIndex=-1,
-                forceObj=list(force),
-                posObj=list(position),
-                flags=pybullet.LINK_FRAME,
-                physicsClientId=self.uid)
+            objectUniqueId=uid,
+            linkIndex=-1,
+            forceObj=list(force),
+            posObj=list(position),
+            flags=pybullet.LINK_FRAME,
+            physicsClientId=self.uid)
 
     def apply_torque_to_body(self, uid, force, position):
         pybullet.applyExternalTorque(
-                objectUniqueId=uid,
-                linkIndex=-1,
-                forceObj=list(force),
-                posObj=list(position),
-                flags=pybullet.LINK_FRAME,
-                physicsClientId=self.uid)
+            objectUniqueId=uid,
+            linkIndex=-1,
+            forceObj=list(force),
+            posObj=list(position),
+            flags=pybullet.LINK_FRAME,
+            physicsClientId=self.uid)
 
     def apply_force_to_link(self, uid, force, position):
         body_uid, link_ind = uid
         pybullet.applyExternalForce(
-                objectUniqueId=body_uid,
-                linkIndex=link_ind,
-                forceObj=list(force),
-                posObj=list(position),
-                flags=pybullet.LINK_FRAME,
-                physicsClientId=self.uid)
+            objectUniqueId=body_uid,
+            linkIndex=link_ind,
+            forceObj=list(force),
+            posObj=list(position),
+            flags=pybullet.LINK_FRAME,
+            physicsClientId=self.uid)
 
     def apply_torque_to_link(self, uid, force, position):
         body_uid, link_ind = uid
         pybullet.applyExternalTorque(
-                objectUniqueId=body_uid,
-                linkIndex=link_ind,
-                forceObj=list(force),
-                posObj=list(position),
-                flags=pybullet.LINK_FRAME,
-                physicsClientId=self.uid)
+            objectUniqueId=body_uid,
+            linkIndex=link_ind,
+            forceObj=list(force),
+            posObj=list(position),
+            flags=pybullet.LINK_FRAME,
+            physicsClientId=self.uid)
 
     #
     # Inverse Kinematics

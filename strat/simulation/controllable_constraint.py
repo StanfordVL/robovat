@@ -28,8 +28,7 @@ class ControllableConstraint(Constraint):
                  joint_axis=[0, 0, 0],
                  parent_frame_pose=None,
                  child_frame_pose=None,
-                 max_linear_velocity=None,
-                 max_angular_velocity=None,
+                 max_linear_velocity=None, max_angular_velocity=None,
                  max_force=None,
                  name=None):
         """Initialize.
@@ -110,7 +109,7 @@ class ControllableConstraint(Constraint):
     def _update_pose_control(self):
         """Update the pose control."""
         delta_position = self._target_pose.position - self.pose.position
-        delta_position /= np.linalg.norm(delta_position) 
+        delta_position /= np.linalg.norm(delta_position)
         delta_position *= self._target_linear_velocity
         new_position = self.pose.position + delta_position
 
@@ -137,14 +136,14 @@ class ControllableConstraint(Constraint):
         """
         delta_position = self._target_pose.position - self.pose.position
         position_reached = (
-            abs(delta_position)[0] < self._position_threshold and 
-            abs(delta_position)[1] < self._position_threshold and 
+            abs(delta_position)[0] < self._position_threshold and
+            abs(delta_position)[1] < self._position_threshold and
             abs(delta_position)[2] < self._position_threshold)
 
         delta_euler = self._target_pose.euler - self.pose.euler
         euler_reached = (
             abs(delta_euler)[0] % (2 * np.pi) < self._euler_threshold and
-            abs(delta_euler)[1] % (2 * np.pi) < self._euler_threshold and 
+            abs(delta_euler)[1] % (2 * np.pi) < self._euler_threshold and
             abs(delta_euler)[2] % (2 * np.pi) < self._euler_threshold)
 
         if not (position_reached and euler_reached):
@@ -162,9 +161,10 @@ class ControllableConstraint(Constraint):
 
         if is_timeout:
             logger.warning(
-                    'Time out (%.2f) with target_pose = %s, current_pose = %s.'
-                    % (self._stop_time - self._start_time,
-                       self._target_pose,
-                       self.pose))
+                'Time out (%.2f) with target_pose = %s, current_pose = %s.'
+                % (self._stop_time - self._start_time,
+                    self._target_pose,
+                    self.pose)
+            )
 
         return is_timeout

@@ -44,9 +44,9 @@ class Simulator(object):
         # Create the physics backend.
         physics_class = getattr(physics, physics_backend)
         self._physics = physics_class(
-                time_step=time_step,
-                use_visualizer=use_visualizer,
-                worker_id=worker_id)
+            time_step=time_step,
+            use_visualizer=use_visualizer,
+            worker_id=worker_id)
 
         self._num_steps = 0
 
@@ -112,8 +112,8 @@ class Simulator(object):
         """Add a body to the simulation.
 
         Args:
-            filename: The path to the URDF file to be loaded. If the path is not
-                absolute path, it will be joined with the assets directory.
+            filename: The path to the URDF file to be loaded. If the path is
+                not absolute path, it will be joined with the assets directory.
             pose: The initial pose as an instance of Pose.
             scale: The scaling factor of the body.
             is_static: If True, set the base of the body to be static.
@@ -185,8 +185,8 @@ class Simulator(object):
             parent_frame_pose: The pose of the joint in the parent frame.
             child_frame_pose: The pose of the joint in the child frame.
             max_force: Max force the constraint can apply.
-            max_linear_velocity: Max linear velocity to change the constraint.
-            max_angular_velocity: Max angular velocity to change the constraint.
+            max_linear_velocity: Maximum linear velocity.
+            max_angular_velocity: Max angular velocity.
             is_controllable: If True, the constraint can apply motor controls.
 
         Returns:
@@ -237,7 +237,8 @@ class Simulator(object):
         elif component_type == 'constraint':
             component = self._constraints[robot_command.component]
         else:
-            raise ValueError('Unrecognized component type: %r' % component_type)
+            raise ValueError('Unrecognized component type: %r' %
+                             component_type)
 
         command_method = getattr(component, robot_command.command_type)
         command_method(**robot_command.arguments)
@@ -260,7 +261,7 @@ class Simulator(object):
                 b_uid = entity_b.uid
 
             contact_points = self._physics.get_contact_points(
-                    a_uid, b_uid)
+                a_uid, b_uid)
             has_contact = len(contact_points) > 0
 
             return has_contact
@@ -366,11 +367,12 @@ class Simulator(object):
                 if not is_stable:
                     all_stable = False
                     break
-        
+
             if all_stable:
                 num_stable_steps += 1
 
-            if (num_stable_steps >= min_stable_steps or num_steps >= max_steps):
+            if (num_stable_steps >= min_stable_steps or
+                    num_steps >= max_steps):
                 break
 
     def plot_pose(self,
@@ -397,22 +399,22 @@ class Simulator(object):
         z_end = origin + np.dot([0, 0, axis_length], pose.matrix3.T)
 
         pybullet.addUserDebugLine(
-                origin,
-                x_end,
-                lineColorRGB=[1, 0, 0],
-                lineWidth=2)
+            origin,
+            x_end,
+            lineColorRGB=[1, 0, 0],
+            lineWidth=2)
 
         pybullet.addUserDebugLine(
-                origin,
-                y_end,
-                lineColorRGB=[0, 1, 0],
-                lineWidth=2)
+            origin,
+            y_end,
+            lineColorRGB=[0, 1, 0],
+            lineWidth=2)
 
         pybullet.addUserDebugLine(
-                origin,
-                z_end,
-                lineColorRGB=[0, 0, 1],
-                lineWidth=2)
+            origin,
+            z_end,
+            lineColorRGB=[0, 0, 1],
+            lineWidth=2)
 
         if text is not None:
             pybullet.addUserDebugText(
@@ -427,7 +429,7 @@ class Simulator(object):
                   line_color=[0, 0, 0],
                   line_width=1):
         """Plot a pose or a frame in the debugging visualizer.
-        
+
         Args:
             start: Starting point of the line.
             end: Ending point of the line.
@@ -435,10 +437,10 @@ class Simulator(object):
             line_width: Width of the line.
         """
         pybullet.addUserDebugLine(
-                start,
-                end,
-                lineColorRGB=line_color,
-                lineWidth=line_width)
+            start,
+            end,
+            lineColorRGB=line_color,
+            lineWidth=line_width)
 
     def clear_visualization(self):
         """Clear all visualization items."""

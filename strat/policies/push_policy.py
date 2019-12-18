@@ -24,11 +24,11 @@ class HeuristicPushPolicy(policy.Policy):
         super(HeuristicPushPolicy, self).__init__(env, config)
         config = self.config
         self._sampler = heuristic_push_sampler.HeuristicPushSampler(
-                cspace_low=config.ACTION.CSPACE.LOW,
-                cspace_high=config.ACTION.CSPACE.HIGH,
-                translation_x=config.ACTION.MOTION.TRANSLATION_X,
-                translation_y=config.ACTION.MOTION.TRANSLATION_Y,
-                max_attemps=config.HEURISTICS.MAX_ATTEMPS)
+            cspace_low=config.ACTION.CSPACE.LOW,
+            cspace_high=config.ACTION.CSPACE.HIGH,
+            translation_x=config.ACTION.MOTION.TRANSLATION_X,
+            translation_y=config.ACTION.MOTION.TRANSLATION_Y,
+            max_attemps=config.HEURISTICS.MAX_ATTEMPS)
 
     def _action(self, observation):
         """Implementation of action.
@@ -44,9 +44,9 @@ class HeuristicPushPolicy(policy.Policy):
         num_episodes = observation['num_episodes']
         num_steps = observation['num_steps']
         action = self._sampler.sample(
-                position, 
-                body_mask, 
-                num_episodes, 
-                num_steps, 
-                num_samples=1)
+            position,
+            body_mask,
+            num_episodes,
+            num_steps,
+            num_samples=1)
         return action

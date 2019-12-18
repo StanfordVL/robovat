@@ -85,9 +85,10 @@ def clearing_goal(state, layout_config):
             check_on_tiles(state[:, i, :],
                            layout_config['REGION'],
                            1.25 * layout_config['SIZE'],
-                           layout_config['OFFSET']))
+                           layout_config['OFFSET'])
+        )
         if i == 0:
-            goal_reached = is_clear_i 
+            goal_reached = is_clear_i
         else:
             goal_reached = np.logical_and(
                 goal_reached,
@@ -343,13 +344,13 @@ def get_reward_fn(task_name,
             reward += time_reward
 
         return reward, termination
-    
+
     return reward_fn
 
 
 class PushReward(reward_fn.RewardFn):
     """Reward function of the pushing tasks."""
-    
+
     def __init__(self,
                  name,
                  task_name,
@@ -359,7 +360,7 @@ class PushReward(reward_fn.RewardFn):
                  use_dense_reward,
                  is_planning=False):
         """Initialize."""
-        self.name = name 
+        self.name = name
 
         self.env = None
         self.reward_fn = get_reward_fn(

@@ -1,4 +1,5 @@
-"""Pushing task environment."""
+"""Pushing task environment.
+"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -9,7 +10,7 @@ import os.path
 import glob
 import random
 import socket
-import shutil 
+import shutil
 
 import cv2
 import gym
@@ -41,36 +42,31 @@ class PushEnv(arm_env.ArmEnv):
             config: Environment configuration.
             debug: True if it is debugging mode, False otherwise.
         """
-
         self.simulator = simulator
         self.config = config or self.default_config
-
         self.debug = debug
 
         self.camera = self.create_camera(
-                height=self.config.KINECT2.DEPTH.HEIGHT,
-                width=self.config.KINECT2.DEPTH.WIDTH,
-                intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
-                translation=self.config.KINECT2.DEPTH.TRANSLATION,
-                rotation=self.config.KINECT2.DEPTH.ROTATION)
+            height=self.config.KINECT2.DEPTH.HEIGHT,
+            width=self.config.KINECT2.DEPTH.WIDTH,
+            intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
+            translation=self.config.KINECT2.DEPTH.TRANSLATION,
+            rotation=self.config.KINECT2.DEPTH.ROTATION)
 
         # Layout.
         assert self.config.LAYOUT_ID is not None
         self.layout_id = self.config.LAYOUT_ID
-
-        print(self.config.TASK_NAME)
 
         if self.config.TASK_NAME is None:
             self.layout_configs = None
         elif self.config.TASK_NAME == 'data_collection':
             self.layout_configs = None
         else:
-            print(self.config.TASK)
             capitalized_task_name = self.config.TASK_NAME.upper()
             layout_names = self.config.TASK[capitalized_task_name].LAYOUT_NAMES
             self.layout_configs = [
-                    self.config.LAYOUT[layout_name]
-                    for layout_name in layout_names
+                self.config.LAYOUT[layout_name]
+                for layout_name in layout_names
             ]
 
         if self.layout_configs is None:
@@ -81,9 +77,9 @@ class PushEnv(arm_env.ArmEnv):
         # Action and configuration space.
         self.num_goal_steps = self.config.NUM_GOAL_STEPS
         self.cspace = gym.spaces.Box(
-                low=np.array(self.config.ACTION.CSPACE.LOW),
-                high=np.array(self.config.ACTION.CSPACE.HIGH),
-                dtype=np.float32)
+            low=np.array(self.config.ACTION.CSPACE.LOW),
+            high=np.array(self.config.ACTION.CSPACE.HIGH),
+            dtype=np.float32)
         start_low = np.array(self.config.ACTION.CSPACE.LOW, dtype=np.float32)
         start_high = np.array(self.config.ACTION.CSPACE.HIGH, dtype=np.float32)
         self.start_offset = 0.5 * (start_high + start_low)
@@ -93,12 +89,12 @@ class PushEnv(arm_env.ArmEnv):
         table_x = self.config.SIM.TABLE.POSE[0][0]
         table_y = self.config.SIM.TABLE.POSE[0][1]
         self.table_workspace = gym.spaces.Box(
-            low=np.array([table_x - 0.5 * self.config.SIM.TABLE.X_RANGE, 
-                          table_y - 0.5 * self.config.SIM.TABLE.Y_RANGE]),
-            high=np.array([table_x + 0.5 * self.config.SIM.TABLE.X_RANGE, 
-                           table_y + 0.5 * self.config.SIM.TABLE.Y_RANGE]),
+            low=np.array([table_x - 0.5 * self.config.TABLE.X_RANGE,
+                         table_y - 0.5 * self.config.TABLE.Y_RANGE]),
+            high=np.array([table_x + 0.5 * self.config.TABLE.X_RANGE,
+                          table_y + 0.5 * self.config.TABLE.Y_RANGE]),
             dtype=np.float32)
-            
+
         # Movable Objects.
         self.min_movable_bodies = self.config.MIN_MOVABLE_BODIES
         self.max_movable_bodies = self.config.MAX_MOVABLE_BODIES
@@ -153,15 +149,15 @@ class PushEnv(arm_env.ArmEnv):
         # Observations and rewards.
         observations = self.initialize_observations()
         reward_fns = [
-                push_reward.PushReward(
-                        name='reward',
-                        task_name=self.config.TASK_NAME,
-                        layout_configs=self.layout_configs,
-                        layout_id=self.layout_id,
-                        use_time_penalty=self.config.USE_TIME_PENALTY,
-                        use_dense_reward=self.config.USE_DENSE_REWARD,
-                        is_planning=False
-                )
+            push_reward.PushReward(
+                name='reward',
+                task_name=self.config.TASK_NAME,
+                layout_configs=self.layout_configs,
+                layout_id=self.layout_id,
+                use_time_penalty=self.config.USE_TIME_PENALTY,
+                use_dense_reward=self.config.USE_DENSE_REWARD,
+                is_planning=False
+            )
         ]
 
         # Recording.
@@ -195,9 +191,9 @@ class PushEnv(arm_env.ArmEnv):
             action_shape = [self.num_goal_steps, 4]
 
         return gym.spaces.Box(
-                low=-np.ones(action_shape, dtype=np.float32),
-                high=np.ones(action_shape, dtype=np.float32),
-                dtype=np.float32)
+            low=-np.ones(action_shape, dtype=np.float32),
+            high=np.ones(action_shape, dtype=np.float32),
+            dtype=np.float32)
 
     def initialize_observations(self):
         """Initialize the observations.
@@ -206,22 +202,22 @@ class PushEnv(arm_env.ArmEnv):
             A list of observations.
         """
         observations = [
-                attribute_obs.IntegerAttributeObs(
-                        'num_episodes',
-                        max_value=int(2**16 - 1),
-                        name='num_episodes'),
-                attribute_obs.IntegerAttributeObs(
-                        'num_steps',
-                        max_value=int(2**16 - 1),
-                        name='num_steps'),
-                attribute_obs.IntegerAttributeObs(
-                        'layout_id',
-                        max_value=self.num_layouts,
-                        name='layout_id'),
-                attribute_obs.ArrayAttributeObs(
-                        'movable_body_mask',
-                        shape=[self.max_movable_bodies],
-                        name='body_mask'),
+            attribute_obs.IntegerAttributeObs(
+                'num_episodes',
+                max_value=int(2**16 - 1),
+                name='num_episodes'),
+            attribute_obs.IntegerAttributeObs(
+                'num_steps',
+                max_value=int(2**16 - 1),
+                name='num_steps'),
+            attribute_obs.IntegerAttributeObs(
+                'layout_id',
+                max_value=self.num_layouts,
+                name='layout_id'),
+            attribute_obs.ArrayAttributeObs(
+                'movable_body_mask',
+                shape=[self.max_movable_bodies],
+                name='body_mask'),
         ]
 
         # In simulation, ground truth segmented point clouds are provided. In
@@ -229,47 +225,47 @@ class PushEnv(arm_env.ArmEnv):
         # clustering algorithms.
         if self.simulator:
             observations += [
-                    camera_obs.SegmentedPointCloudObs(
-                            self.camera,
-                            num_points=self.config.OBS.NUM_POINTS,
-                            num_bodies=self.max_movable_bodies,
-                            name='point_cloud'),
+                camera_obs.SegmentedPointCloudObs(
+                    self.camera,
+                    num_points=self.config.OBS.NUM_POINTS,
+                    num_bodies=self.max_movable_bodies,
+                    name='point_cloud'),
             ]
 
         else:
             observations += [
-                    camera_obs.SegmentedPointCloudObs(
-                            self.camera,
-                            num_points=self.config.OBS.NUM_POINTS,
-                            num_bodies=self.max_movable_bodies,
-                            crop_min=self.config.OBS.CROP_MIN,
-                            crop_max=self.config.OBS.CROP_MAX,
-                            confirm_target=True,
-                            name='point_cloud'),
+                camera_obs.SegmentedPointCloudObs(
+                    self.camera,
+                    num_points=self.config.OBS.NUM_POINTS,
+                    num_bodies=self.max_movable_bodies,
+                    crop_min=self.config.OBS.CROP_MIN,
+                    crop_max=self.config.OBS.CROP_MAX,
+                    confirm_target=True,
+                    name='point_cloud'),
             ]
 
         # Prestiged information.
         if self.simulator and self.config.USE_PRESTIGE_OBS:
             observations += [
-                    pose_obs.PoseObs(
-                            num_bodies=self.max_movable_bodies,
-                            modality='position',
-                            name='position'),
-                    attribute_obs.FlagObs('is_safe', name='is_safe'),
-                    attribute_obs.FlagObs('is_effective', name='is_effective'),
+                pose_obs.PoseObs(
+                    num_bodies=self.max_movable_bodies,
+                    modality='position',
+                    name='position'),
+                attribute_obs.FlagObs('is_safe', name='is_safe'),
+                attribute_obs.FlagObs('is_effective', name='is_effective'),
             ]
 
         # Visual observations for visualization.
         if self.config.USE_VISUALIZATION_OBS:
             observations += [
-                    camera_obs.CameraObs(
-                            self.camera,
-                            modality='rgb',
-                            name='rgb'),
-                    camera_obs.CameraObs(
-                            self.camera,
-                            modality='depth',
-                            name='depth'),
+                camera_obs.CameraObs(
+                    self.camera,
+                    modality='rgb',
+                    name='rgb'),
+                camera_obs.CameraObs(
+                    self.camera,
+                    modality='depth',
+                    name='depth'),
             ]
 
         return observations
@@ -279,22 +275,22 @@ class PushEnv(arm_env.ArmEnv):
         observations = super(PushEnv, self).reset()
 
         self.reset_camera(
-                self.camera,
-                intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
-                translation=self.config.KINECT2.DEPTH.TRANSLATION,
-                rotation=self.config.KINECT2.DEPTH.ROTATION,
-                intrinsics_noise=self.config.KINECT2.DEPTH.INTRINSICS_NOISE,
-                translation_noise=self.config.KINECT2.DEPTH.TRANSLATION_NOISE,
-                rotation_noise=self.config.KINECT2.DEPTH.ROTATION_NOISE)
+            self.camera,
+            intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
+            translation=self.config.KINECT2.DEPTH.TRANSLATION,
+            rotation=self.config.KINECT2.DEPTH.ROTATION,
+            intrinsics_noise=self.config.KINECT2.DEPTH.INTRINSICS_NOISE,
+            translation_noise=self.config.KINECT2.DEPTH.TRANSLATION_NOISE,
+            rotation_noise=self.config.KINECT2.DEPTH.ROTATION_NOISE)
 
         if self.use_recording:
             hostname = socket.gethostname().split('.')[0]
             self.recording_camera = self.create_camera(
-                    height=self.config.RECORDING.CAMERA.HEIGHT,
-                    width=self.config.RECORDING.CAMERA.WIDTH,
-                    intrinsics=self.config.RECORDING.CAMERA.INTRINSICS,
-                    translation=self.config.RECORDING.CAMERA.TRANSLATION,
-                    rotation=self.config.RECORDING.CAMERA.ROTATION)
+                height=self.config.RECORDING.CAMERA.HEIGHT,
+                width=self.config.RECORDING.CAMERA.WIDTH,
+                intrinsics=self.config.RECORDING.CAMERA.INTRINSICS,
+                translation=self.config.RECORDING.CAMERA.TRANSLATION,
+                rotation=self.config.RECORDING.CAMERA.ROTATION)
 
             recording_tmp_dir = os.path.join('/tmp', 'recording')
             if not os.path.exists(recording_tmp_dir):
@@ -326,14 +322,14 @@ class PushEnv(arm_env.ArmEnv):
             resolution = (self.config.RECORDING.CAMERA.WIDTH,
                           self.config.RECORDING.CAMERA.HEIGHT)
             self.recording_tmp_path = os.path.join(
-                    recording_tmp_dir, name)
+                recording_tmp_dir, name)
             self.recording_output_path = os.path.join(
-                    recording_output_dir, name)
+                recording_output_dir, name)
             self.video_writer = cv2.VideoWriter(
-                    self.recording_tmp_path, 
-                    cv2.VideoWriter_fourcc(*'XVID'),
-                    self.config.RECORDING.FPS,
-                    resolution)
+                self.recording_tmp_path,
+                cv2.VideoWriter_fourcc(*'XVID'),
+                self.config.RECORDING.FPS,
+                resolution)
 
         return observations
 
@@ -352,8 +348,8 @@ class PushEnv(arm_env.ArmEnv):
         # Simulation.
         if self.simulator:
             self.num_movable_bodies = np.random.randint(
-                    low=self.min_movable_bodies,
-                    high=self.max_movable_bodies + 1)
+                low=self.min_movable_bodies,
+                high=self.max_movable_bodies + 1)
 
             self._load_movable_bodies()
 
@@ -361,15 +357,15 @@ class PushEnv(arm_env.ArmEnv):
 
                 layout_config = self.layout_configs[self.layout_id]
                 self._load_tiles(
-                        layout_config.REGION,
-                        layout_config.SIZE,
-                        layout_config.OFFSET,
-                        z_offset=0.001 - 0.025)
+                    layout_config.REGION,
+                    layout_config.SIZE,
+                    layout_config.OFFSET,
+                    z_offset=0.001 - 0.025)
                 self._load_tiles(
-                        layout_config.GOAL,
-                        layout_config.SIZE,
-                        layout_config.OFFSET,
-                        z_offset=0.0015 - 0.025)
+                    layout_config.GOAL,
+                    layout_config.SIZE,
+                    layout_config.OFFSET,
+                    z_offset=0.0015 - 0.025)
         else:
             self.num_movable_bodies = self.max_movable_bodies
             logger.info('Assume there are %d movable objects on the table.',
@@ -426,13 +422,13 @@ class PushEnv(arm_env.ArmEnv):
             is_target = False
             if self.layout_configs is None:
                 movable_poses = self._sample_body_poses(
-                        self.num_movable_bodies, self.movable_config)
+                    self.num_movable_bodies, self.movable_config)
             else:
                 layout_config = self.layout_configs[self.layout_id]
                 movable_poses = self._sample_body_poses_on_tiles(
-                        self.num_movable_bodies,
-                        self.movable_config,
-                        layout_config)
+                    self.num_movable_bodies,
+                    self.movable_config,
+                    layout_config)
                 is_target = (layout_config.TARGET is not None)
 
             for i in range(self.num_movable_bodies):
@@ -457,20 +453,20 @@ class PushEnv(arm_env.ArmEnv):
 
                 # Wait for the new body to be dropped onto the table.
                 self.simulator.wait_until_stable(
-                        body,
-                        linear_velocity_threshold=0.1,
-                        angular_velocity_threshold=0.1,
-                        max_steps=500)
+                    body,
+                    linear_velocity_threshold=0.1,
+                    angular_velocity_threshold=0.1,
+                    max_steps=500)
 
                 # Change physical properties.
                 mass = robot_env.get_config_value(self.movable_config.MASS)
                 lateral_friction = robot_env.get_config_value(
-                        self.movable_config.FRICTION)
+                    self.movable_config.FRICTION)
                 body.set_dynamics(
-                        mass=mass,
-                        lateral_friction=lateral_friction,
-                        rolling_friction=None,
-                        spinning_friction=None)
+                    mass=mass,
+                    lateral_friction=lateral_friction,
+                    rolling_friction=None,
+                    spinning_friction=None)
                 self.movable_bodies.append(body)
 
             for body in self.movable_bodies:
@@ -495,7 +491,8 @@ class PushEnv(arm_env.ArmEnv):
         Args:
             num_samples: Number of samples.
             body_config: Configuration of the body.
-            max_attemps: Maximum number of attemps to find a feasible placement.
+            max_attemps: Maximum number of attemps to find a feasible
+                placement.
 
         Returns:
             List of poses.
@@ -534,7 +531,7 @@ class PushEnv(arm_env.ArmEnv):
 
             if i == num_attemps:
                 break
-            
+
         return movable_poses
 
     def _sample_body_poses_on_tiles(self,
@@ -550,7 +547,8 @@ class PushEnv(arm_env.ArmEnv):
             body_config: Configuration of the body.
             layout_config: Configuration of the layout.
             safe_drop_height: Dropping height of the body.
-            max_attemps: Maximum number of attemps to find a feasible placement.
+            max_attemps: Maximum number of attemps to find a feasible
+                placement.
 
         Returns:
             List of poses.
@@ -575,11 +573,11 @@ class PushEnv(arm_env.ArmEnv):
                     tile_id = np.random.choice(num_tiles)
                     tile_center = tile_config.CENTERS[tile_id]
                     x_range = [
-                            tile_offset[0] + (tile_center[0] - 0.5) * tile_size,
-                            tile_offset[0] + (tile_center[0] + 0.5) * tile_size]
+                        tile_offset[0] + (tile_center[0] - 0.5) * tile_size,
+                        tile_offset[0] + (tile_center[0] + 0.5) * tile_size]
                     y_range = [
-                            tile_offset[1] + (tile_center[1] - 0.5) * tile_size,
-                            tile_offset[1] + (tile_center[1] + 0.5) * tile_size]
+                        tile_offset[1] + (tile_center[1] - 0.5) * tile_size,
+                        tile_offset[1] + (tile_center[1] + 0.5) * tile_size]
                     z = self.table_pose.position.z + safe_drop_height
                     pose = Pose.uniform(x=x_range,
                                         y=y_range,
@@ -591,7 +589,7 @@ class PushEnv(arm_env.ArmEnv):
                     is_valid = True
                     for other_pose in movable_poses:
                         dist = np.linalg.norm(
-                                pose.position[:2] - other_pose.position[:2])
+                            pose.position[:2] - other_pose.position[:2])
 
                         if dist < body_config.MARGIN:
                             is_valid = False
@@ -607,7 +605,7 @@ class PushEnv(arm_env.ArmEnv):
 
             if i == num_attemps:
                 break
-            
+
         return movable_poses
 
     def step(self, action):
@@ -623,9 +621,9 @@ class PushEnv(arm_env.ArmEnv):
 
         if is_done:
             logger.info(
-                    'num_successes: %d, success_rate: %.3f',
-                    self.num_successes,
-                    self.num_successes / float(self._num_episodes + 1e-14),
+                'num_successes: %d, success_rate: %.3f',
+                self.num_successes,
+                self.num_successes / float(self._num_episodes + 1e-14),
             )
             text = ('num_successes_by_step: ' +
                     ', '.join(['%d'] * int(self.config.MAX_STEPS + 1)))
@@ -649,12 +647,12 @@ class PushEnv(arm_env.ArmEnv):
             action: A dictionary of mode and argument of the action.
         """
         self.attributes = {
-                'num_episodes': self.num_episodes,
-                'num_steps': self.num_steps,
-                'layout_id': self.layout_id,
-                'movable_body_mask': self.movable_body_mask,
-                'is_safe': True,
-                'is_effective': True,
+            'num_episodes': self.num_episodes,
+            'num_steps': self.num_steps,
+            'layout_id': self.layout_id,
+            'movable_body_mask': self.movable_body_mask,
+            'is_safe': True,
+            'is_effective': True,
         }
 
         waypoints = self._compute_all_waypoints(action)
@@ -759,8 +757,8 @@ class PushEnv(arm_env.ArmEnv):
             waypoints = [self._compute_waypoints(action)]
         else:
             waypoints = [
-                    self._compute_waypoints(action[i]) 
-                    for i in range(self.num_goal_steps)]
+                self._compute_waypoints(action[i])
+                for i in range(self.num_goal_steps)]
         return waypoints
 
     def _compute_waypoints(self, action):
@@ -782,7 +780,8 @@ class PushEnv(arm_env.ArmEnv):
         z = self.start_z
         angle = 0.0
         start = Pose(
-                [[x, y, z], [np.pi, 0, (angle + np.pi) % (2 * np.pi) - np.pi]])
+            [[x, y, z], [np.pi, 0, (angle + np.pi) % (2 * np.pi) - np.pi]]
+        )
 
         # End.
         delta_x = motion[0] * self.config.ACTION.MOTION.TRANSLATION_X
@@ -792,7 +791,8 @@ class PushEnv(arm_env.ArmEnv):
         x = np.clip(x, self.cspace.low[0], self.cspace.high[0])
         y = np.clip(y, self.cspace.low[1], self.cspace.high[1])
         end = Pose(
-                [[x, y, z], [np.pi, 0, (angle + np.pi) % (2 * np.pi) - np.pi]])
+            [[x, y, z], [np.pi, 0, (angle + np.pi) % (2 * np.pi) - np.pi]]
+        )
 
         waypoints = [start, end]
         return waypoints
@@ -869,7 +869,7 @@ class PushEnv(arm_env.ArmEnv):
 
         Returns:
             True if all the safty conditions are satisfied, False otherwise.
-            
+
         """
         if self.simulator:
             if self.phase == 'pre':
@@ -894,7 +894,8 @@ class PushEnv(arm_env.ArmEnv):
                     return False
 
                 for body in self.movable_bodies:
-                    if (body.position.x < self.table_workspace.low[0] or
+                    if (
+                            body.position.x < self.table_workspace.low[0] or
                             body.position.x > self.table_workspace.high[0] or
                             body.position.y < self.table_workspace.low[1] or
                             body.position.y > self.table_workspace.high[1]):
@@ -923,7 +924,7 @@ class PushEnv(arm_env.ArmEnv):
             delta_angle = np.abs(delta_angle)
             delta_angle = np.sum(delta_angle)
 
-            if (delta_position <= self.config.ACTION.MIN_DELTA_POSITION and 
+            if (delta_position <= self.config.ACTION.MIN_DELTA_POSITION and
                     delta_angle <= self.config.ACTION.MIN_DELTA_ANGLE):
                 if self.config.DEBUG:
                     logger.warning('Ineffective action.')
@@ -942,15 +943,15 @@ class PushEnv(arm_env.ArmEnv):
             positions = [body.position for body in self.movable_bodies]
             angles = [body.euler[2] for body in self.movable_bodies]
             return [np.stack(positions, axis=0), np.stack(angles, axis=0)]
-        
+
         return None
 
     def visualize(self, action, info):
         """Visualize the action.
 
-        Args: 
+        Args:
             action: A selected action.
-            info: The policy infomation.  
+            info: The policy infomation.
         """
         num_info_samples = self.config.NUM_INFO_SAMPLES
 
@@ -980,13 +981,13 @@ class PushEnv(arm_env.ArmEnv):
 
             t = 0
             self._plot_states_distribution(
-                    self.ax,
-                    pred_states[:, t],
-                    terminations[:, t],
-                    body_index=0,
-                    num_plots=num_info_samples,
-                    c='gold',
-                    alpha=0.5)
+                self.ax,
+                pred_states[:, t],
+                terminations[:, t],
+                body_index=0,
+                num_plots=num_info_samples,
+                c='gold',
+                alpha=0.5)
 
         if 'pred_states' in info:
             pred_states = info['pred_states']
@@ -1089,7 +1090,7 @@ class PushEnv(arm_env.ArmEnv):
             p1 = self.camera.project_point(points1)
 
             for t in range(num_steps):
-                points2 = np.array(list(pred_states[t, j]) + [z]) 
+                points2 = np.array(list(pred_states[t, j]) + [z])
                 p2 = self.camera.project_point(points2)
 
                 # if np.linalg.norm(points2 - points1) < 0.1:
@@ -1129,7 +1130,7 @@ class PushEnv(arm_env.ArmEnv):
 
         for i in range(num_plots):
             position = pred_states[i, body_index]
-            points = np.array(list(position) + [z]) 
+            points = np.array(list(position) + [z])
             p = self.camera.project_point(points)
 
             if terminations[i]:

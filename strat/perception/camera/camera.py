@@ -195,7 +195,7 @@ class Camera(object):
         """Deprojects a single pixel with a given depth into a 3D point.
 
         Args:
-            pixel: 2D point representing the pixel location in the camera image.
+            pixel: 2D point representing the pixel location in the image.
             depth: Depth value at the given pixel location.
             is_world_frame: True if the 3D point is defined in the world frame,
                 False if it is defined in the camera frame.
@@ -238,7 +238,7 @@ class Camera(object):
 
         if is_world_frame:
             point_cloud = self.pose.position.reshape(3, 1) + np.matmul(
-                    self.pose.matrix3,
-                    point_cloud)
+                self.pose.matrix3,
+                point_cloud)
 
         return np.array(point_cloud.T)

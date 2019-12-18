@@ -18,7 +18,7 @@ from strat.utils.logging import logger
 INF = 2**32 - 1
 
 
-class ClickController(object): 
+class ClickController(object):
 
     def __init__(self, obs):
         self.obs = obs
@@ -119,7 +119,7 @@ class PointCloudObs(CameraObs):
             point_cloud = pc_utils.remove_table(point_cloud)
 
         point_cloud = pc_utils.downsample(
-                point_cloud, num_samples=self.num_points)
+            point_cloud, num_samples=self.num_points)
 
         return point_cloud
 
@@ -171,7 +171,7 @@ class SegmentedPointCloudObs(CameraObs):
     def on_episode_start(self):
         """Called at the start of each episode."""
         self.camera.reset()
-        if self.env.simulator: 
+        if self.env.simulator:
             self.body_ids = [body.uid for body in self.env.movable_bodies]
 
     def get_gym_space(self):
@@ -194,7 +194,7 @@ class SegmentedPointCloudObs(CameraObs):
             point_cloud = point_cloud[crop_mask]
 
         # Segment.
-        if self.env.simulator: 
+        if self.env.simulator:
             segmask = images['segmask']
             segmask = segmask.flatten()
             segmask = pc_utils.convert_segment_ids(segmask, self.body_ids)
@@ -225,7 +225,7 @@ class SegmentedPointCloudObs(CameraObs):
             # Exchange the target object with the first object.
             centers = np.mean(point_cloud, axis=1)
             dists = np.linalg.norm(
-                    centers - self.target_position[np.newaxis, :], axis=-1)
+                centers - self.target_position[np.newaxis, :], axis=-1)
             target_id = dists.argmin()
             if target_id != 0:
                 tmp = copy.deepcopy(point_cloud)
@@ -309,7 +309,7 @@ class CameraRotationObs(observation.Observation):
 
     def get_gym_space(self):
         """Returns gym space of this observation."""
-        # TODO(kuanfang): Correct the space.
+        # TODO: Correct the space limits.
         return gym.spaces.Box(
             low=-INF * np.ones((3, 3)),
             high=INF * np.ones((3, 3)),

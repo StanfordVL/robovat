@@ -84,8 +84,8 @@ def cluster(point_cloud,
     """
     if method == 'dbscan':
         algorithm = sklearn_cluster.DBSCAN(
-                min_samples=50,
-                eps=0.02)
+            min_samples=50,
+            eps=0.02)
 
     elif method == 'agg':
         connectivity = kneighbors_graph(
@@ -103,7 +103,7 @@ def cluster(point_cloud,
     algorithm.fit(point_cloud)
     segmask = algorithm.labels_.astype(np.int)
 
-    # TODO(kuanfang): Check if found enough clusters.
+    # TODO: Check if found enough clusters.
     return segmask
 
 

@@ -94,18 +94,10 @@ KINECT2:
     ROTATION_NOISE: null
 
 
-RECORDING:
-  USE: 0
-  OUTPUT_DIR: 'episodes/recording'
-  NUM_STEPS: 200
-  FPS: 30
-
-  CAMERA:
-    HEIGHT: 1080
-    WIDTH: 1920
-    INTRINSICS: [1032.74, 0, 956.86, 0, 1032.34, 539.14, 0, 0, 1]
-    TRANSLATION: [-0.050, -0.054, 1.680]
-    ROTATION: [-3.1416, 1.1416, 1.5708]
+TABLE:
+  HEIGHT_RANGE: [0.8, 0.8]
+  X_RANGE: 0.76
+  Y_RANGE: 1.22
 
 
 SIM:
@@ -128,14 +120,11 @@ SIM:
     POSE: [[0, 0, -0.9], [0, 0, 0]]
 
   TABLE:
-      PATH: 'sim/envs/arm_env/tables/table_svl_wooden.urdf'
-      POSE: [[0.6, 0.05, -0.9], [0, 0, 0]]
-      HEIGHT_RANGE: [0.8, 0.8]
-      X_RANGE: 0.76
-      Y_RANGE: 1.22
+    PATH: 'sim/envs/arm_env/tables/table_svl_wooden.urdf'
+    POSE: [[0.6, 0.05, -0.9], [0, 0, 0]]
 
   FENCE:
-      PATH: 'sim/envs/push_env/fence_svl_wooden.urdf'
+    PATH: 'sim/envs/push_env/fence_svl_wooden.urdf'
 
   TILE:
     PATH: 'sim/envs/push_env/tile.urdf'
@@ -201,3 +190,17 @@ MOVABLE:
     MARGIN: 0.15
     MASS: 100.
     FRICTION: 1.0
+
+
+RECORDING:
+  USE: 0
+  OUTPUT_DIR: 'episodes/recording'
+  NUM_STEPS: 200
+  FPS: 30
+
+  CAMERA:
+    HEIGHT: 1080
+    WIDTH: 1920
+    INTRINSICS: [1032.74, 0, 956.86, 0, 1032.34, 539.14, 0, 0, 1]
+    TRANSLATION: [-0.050, -0.054, 1.680]
+    ROTATION: [-3.1416, 1.1416, 1.5708]

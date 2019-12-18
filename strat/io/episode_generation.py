@@ -45,11 +45,11 @@ def generate_episode(env, policy, num_steps=None, debug=False):
 
         new_observation, reward, done, info = env.step(action)
         transition = {
-                'state': observation,
-                'action': action,
-                'reward': reward,
-                'info': info,
-                }
+            'state': observation,
+            'action': action,
+            'reward': reward,
+            'info': info,
+            }
         transitions.append(transition)
         observation = new_observation
 
@@ -60,10 +60,10 @@ def generate_episode(env, policy, num_steps=None, debug=False):
             break
 
     episode = {
-            'hostname': socket.gethostname(),
-            'timestamp': time_utils.get_timestamp_as_string(),
-            'transitions': transitions,
-            }
+        'hostname': socket.gethostname(),
+        'timestamp': time_utils.get_timestamp_as_string(),
+        'transitions': transitions,
+    }
 
     return episode
 
@@ -101,9 +101,9 @@ def generate_episodes(env, policy, num_steps=None, num_episodes=None,
             total_time += (toc - tic)
 
             logger.info(
-                    'Episode %d finished in %.2f sec. '
-                    'In average each episode takes %.2f sec',
-                    episode_index, toc - tic, total_time / (episode_index + 1))
+                'Episode %d finished in %.2f sec. '
+                'In average each episode takes %.2f sec',
+                episode_index, toc - tic, total_time / (episode_index + 1))
 
             yield episode_index, episode
 

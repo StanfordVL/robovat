@@ -15,7 +15,7 @@ SEED = 42
 
 class HeuristicPushSampler(object):
     """Heuristics push sampler."""
-    
+
     def __init__(self,
                  cspace_low,
                  cspace_high,
@@ -26,7 +26,7 @@ class HeuristicPushSampler(object):
                  max_attemps=512):
         """Initialize.
 
-        Args: 
+        Args:
             cspace_low:
             cspace_high:
             translation_x:
@@ -98,7 +98,11 @@ class HeuristicPushSampler(object):
 
             # Check if is_effective.
             is_effective = not self.is_waypoint_clear(
-                waypoints[0], waypoints[1], target_position, self.motion_margin)
+                waypoints[0],
+                waypoints[1],
+                target_position,
+                self.motion_margin)
+
             if not is_effective:
                 continue
 
@@ -120,7 +124,7 @@ class HeuristicPushSampler(object):
 
     def get_waypoints(self, start, motion):
         motion = np.reshape(motion, [-1, 2])
-        
+
         x = start[0] * self.cspace_range[0] + self.cspace_offset[0]
         y = start[1] * self.cspace_range[1] + self.cspace_offset[1]
         start = [x, y]

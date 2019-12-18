@@ -132,8 +132,8 @@ class YamlConfig(object):
 
         return expression
 
-    def __ordered_load(self, 
-                       stream, 
+    def __ordered_load(self,
+                       stream,
                        loader=yaml.Loader,
                        object_pairs_hook=OrderedDict):
         """Load an ordered dictionary from a yaml file.
@@ -142,9 +142,9 @@ class YamlConfig(object):
             pass
 
         OrderedLoader.add_constructor(
-                yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                lambda loader, node: object_pairs_hook(
-                        loader.construct_pairs(node)))
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+            lambda loader, node: object_pairs_hook(
+                    loader.construct_pairs(node)))
 
         return yaml.load(stream, OrderedLoader)
 

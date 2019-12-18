@@ -49,8 +49,8 @@ class Grasp2D(object):
         """Width in pixels.
         """
         if self.camera is None:
-            raise ValueError('Must specify camera intrinsics to compute gripper'
-                             'width in 3D space.')
+            raise ValueError('Must specify camera intrinsics to compute '
+                             'gripper width in 3D space.')
 
         # form the jaw locations in 3D space at the given depth
         p1 = np.array([0, 0, self.depth])

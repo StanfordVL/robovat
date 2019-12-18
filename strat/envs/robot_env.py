@@ -23,8 +23,8 @@ def get_config_value(config):
     """Get the value of an configuration item.
 
     If the config is None, return None. If the config is a value, return the
-    value. Otherwise, the config must by a tuple or list represents low and high
-    values to sample the property from.
+    value. Otherwise, the config must by a tuple or list represents low and
+    high values to sample the property from.
     """
     if config is None:
         return None
@@ -81,7 +81,8 @@ class RobotEnv(gym.Env):
             reward_fn.initialize(self)
 
         self.observation_space = gym.spaces.Dict([
-                (obs.name, obs.get_gym_space()) for obs in self.observations])
+            (obs.name, obs.get_gym_space()) for obs in self.observations
+        ])
 
         self.obs_data = None
         self.prev_obs_data = None
@@ -94,7 +95,8 @@ class RobotEnv(gym.Env):
         config_path = os.path.join(os.path.dirname(__file__), 'configs',
                                    '%s.yaml' % (env_name))
         assert os.path.exists(config_path), (
-                'Default configuration file %s does not exist' % (config_path))
+            'Default configuration file %s does not exist' % (config_path)
+        )
         return YamlConfig(config_path).as_easydict()
 
     @property
@@ -192,7 +194,7 @@ class RobotEnv(gym.Env):
 
         reward = float(reward)
         self._episode_reward += reward
-        
+
         if self.config.MAX_STEPS is not None:
             if self.num_steps >= self.config.MAX_STEPS:
                 self._is_done = True
@@ -202,9 +204,9 @@ class RobotEnv(gym.Env):
         if self._is_done:
             self._total_reward += self.episode_reward
             logger.info(
-                    'episode_reward: %.3f, avg_episode_reward: %.3f',
-                    self.episode_reward,
-                    float(self.total_reward) / (self._num_episodes + 1e-14),
+                'episode_reward: %.3f, avg_episode_reward: %.3f',
+                self.episode_reward,
+                float(self.total_reward) / (self._num_episodes + 1e-14),
             )
 
         return observation, reward, self._is_done, None

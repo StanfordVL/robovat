@@ -24,8 +24,8 @@ def write_data_to_hdf5(f, data, compress_size_thresh=100):
             group_list = f.create_group(key + '[]')
             for i, value_i in enumerate(value):
                 assert isinstance(value_i, (dict, np.ndarray)), (
-                        'List \'%s\' has type %s value %s, which is forbidden. '
-                        'Lists should only have dict or numpy.ndarray values.'
+                        'List \'%s\' has type %s value %s, which is forbidden.'
+                        ' Lists should only have dict or numpy.ndarray values.'
                         % (key, type(value_i), value_i))
                 group = group_list.create_group(str(i))
                 write_data_to_hdf5(group, value_i)
@@ -36,8 +36,10 @@ def write_data_to_hdf5(f, data, compress_size_thresh=100):
                 else:
                     value = np.array(value)
                     if np.prod(value.shape) >= compress_size_thresh:
-                        f.create_dataset(key, data=value,
-                                         compression="gzip", compression_opts=9)
+                        f.create_dataset(
+                            key,
+                            data=value,
+                            compression="gzip", compression_opts=9)
                     else:
                         f.create_dataset(key, data=value)
             except Exception:

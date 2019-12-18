@@ -41,14 +41,14 @@ class Body(Entity):
         self._is_static = is_static
 
         self._links = [
-                Link(self, link_ind)
-                for link_ind in self.physics.get_body_link_indices(self.uid)
-                ]
+            Link(self, link_ind)
+            for link_ind in self.physics.get_body_link_indices(self.uid)
+        ]
 
         self._joints = [
-                Joint(self, joint_ind)
-                for joint_ind in self.physics.get_body_joint_indices(self.uid)
-                ]
+            Joint(self, joint_ind)
+            for joint_ind in self.physics.get_body_joint_indices(self.uid)
+        ]
 
         self._constraints = []
 
@@ -126,11 +126,7 @@ class Body(Entity):
 
     @property
     def mass(self):
-        # TODO(kuanfang): This function is still buggy.
         if self._mass is None:
-            # self._mass = 0.0
-            # for link in self.links:
-            #     self._mass += link.mass
             self._mass = self.physics.get_body_mass(self.uid)
         return self._mass
 
@@ -226,12 +222,12 @@ class Body(Entity):
             spinning_friction: The spinning friction coefficient.
         """
         return self.physics.set_body_dynamics(
-                self.uid,
-                mass=mass,
-                lateral_friction=lateral_friction,
-                rolling_friction=rolling_friction,
-                spinning_friction=rolling_friction,
-                )
+            self.uid,
+            mass=mass,
+            lateral_friction=lateral_friction,
+            rolling_friction=rolling_friction,
+            spinning_friction=rolling_friction,
+        )
 
     def set_color(self, rgba=None, specular=None):
         """Set color.

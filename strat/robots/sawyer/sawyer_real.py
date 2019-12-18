@@ -111,10 +111,10 @@ class SawyerReal(sawyer.Sawyer):
             Dictionary of version information.
         """
         return {
-                'SDKVersion': intera_interface.settings.SDK_VERSION,
-                'SDK2Gripper': intera_interface.settings.VERSIONS_SDK2GRIPPER,
-                'SDK2Robot': intera_interface.settings.VERSIONS_SDK2ROBOT
-                }
+            'SDKVersion': intera_interface.settings.SDK_VERSION,
+            'SDK2Gripper': intera_interface.settings.VERSIONS_SDK2GRIPPER,
+            'SDK2Robot': intera_interface.settings.VERSIONS_SDK2ROBOT
+        }
 
     @property
     def pose(self):
@@ -132,9 +132,11 @@ class SawyerReal(sawyer.Sawyer):
 
         position = [ros_position.x, ros_position.y, ros_position.z]
         orientation = [
-                ros_quaternion.x, ros_quaternion.y, ros_quaternion.z,
-                ros_quaternion.w
-                ]
+            ros_quaternion.x,
+            ros_quaternion.y,
+            ros_quaternion.z,
+            ros_quaternion.w
+        ]
 
         return Pose([position, orientation])
 
@@ -202,13 +204,13 @@ class SawyerReal(sawyer.Sawyer):
             pass
         else:
             positions = {
-                    self._joint_names[joint_ind]: joint_position
-                    for joint_ind, joint_position in enumerate(positions)
-                    }
+                self._joint_names[joint_ind]: joint_position
+                for joint_ind, joint_position in enumerate(positions)
+            }
 
         # Send the synchronous command.
         self._limb.move_to_joint_positions(
-                positions=positions, timeout=timeout, threshold=threshold)
+            positions=positions, timeout=timeout, threshold=threshold)
 
     def move_to_gripper_pose(self,
                              pose,
@@ -264,16 +266,16 @@ class SawyerReal(sawyer.Sawyer):
 
         else:
             positions = self._compute_inverse_kinematics(
-                    self.config.END_EFFCTOR_NAME, pose)
+                self.config.END_EFFCTOR_NAME, pose)
 
             if positions is None:
                 rospy.logerr("IK response is not valid.")
             else:
                 self.move_to_joint_positions(
-                        positions=positions,
-                        speed=speed,
-                        timeout=timeout,
-                        threshold=threshold)
+                    positions=positions,
+                    speed=speed,
+                    timeout=timeout,
+                    threshold=threshold)
 
     def move_along_gripper_path(self,
                                 poses,
@@ -310,7 +312,7 @@ class SawyerReal(sawyer.Sawyer):
             # Move long the path.
             rospy.loginfo('Planning the trajectory with moveit...')
             plan, _ = self._group.compute_cartesian_path(
-                    waypoints, self.config.END_EFFECTOR_STEP, 0.0)
+                waypoints, self.config.END_EFFECTOR_STEP, 0.0)
             rospy.loginfo('Moving along the planned path...')
             self._group.set_max_velocity_scaling_factor(speed)
             self._group.execute(plan)
@@ -364,7 +366,7 @@ class SawyerReal(sawyer.Sawyer):
         # Create an IK service.
         service_name = 'ExternalTools/right/PositionKinematicsNode/IKService'
         ik_service = rospy.ServiceProxy(
-                service_name, intera_core_msgs.srv.SolvePositionIK)
+            service_name, intera_core_msgs.srv.SolvePositionIK)
         ik_request = intera_core_msgs.srv.SolvePositionIKRequest()
 
         # The Header.
@@ -391,9 +393,9 @@ class SawyerReal(sawyer.Sawyer):
         # Return the results.
         if ik_response.result_type[0] > 0:
             positions = dict(
-                    zip(ik_response.joints[0].name,
-                        ik_response.joints[0].position)
-                    )
+                zip(ik_response.joints[0].name,
+                    ik_response.joints[0].position)
+            )
             return positions
         else:
             rospy.logerr("IK response is not valid.")

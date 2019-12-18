@@ -39,117 +39,116 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-            '--env',
-            dest='env',
-            type=str,
-            help='The environment.',
-            required=True)
+        '--env',
+        dest='env',
+        type=str,
+        help='The environment.',
+        required=True)
 
     parser.add_argument(
-            '--policy',
-            dest='policy',
-            type=str,
-            help='The policy.',
-            default=None)
+        '--policy',
+        dest='policy',
+        type=str,
+        help='The policy.',
+        default=None)
 
     parser.add_argument(
-            '--env_config',
-            dest='env_config',
-            type=str,
-            help='The configuration file for the environment.',
-            default=None)
+        '--env_config',
+        dest='env_config',
+        type=str,
+        help='The configuration file for the environment.',
+        default=None)
 
     parser.add_argument(
-            '--policy_config',
-            dest='policy_config',
-            type=str,
-            help='The configuration file for the policy.',
-            default=None)
+        '--policy_config',
+        dest='policy_config',
+        type=str,
+        help='The configuration file for the policy.',
+        default=None)
 
     parser.add_argument(
-            '--config_bindings',
-            dest='config_bindings',
-            type=str,
-            help='The configuration bindings.',
-            default=None)
+        '--config_bindings',
+        dest='config_bindings',
+        type=str,
+        help='The configuration bindings.',
+        default=None)
 
     parser.add_argument(
-            '--use_simulator',
-            dest='use_simulator',
-            type=int,
-            help='Run experiments in the simulation is it is True.',
-            required=False,
-            default=1)
+        '--use_simulator',
+        dest='use_simulator',
+        type=int,
+        help='Run experiments in the simulation is it is True.',
+        default=1)
 
     parser.add_argument(
-            '--assets',
-            dest='assets_dir',
-            type=str,
-            help='The assets directory.',
-            default='./assets')
+        '--assets',
+        dest='assets_dir',
+        type=str,
+        help='The assets directory.',
+        default='./assets')
 
     parser.add_argument(
-            '--output',
-            dest='output_dir',
-            type=str,
-            help='The output directory to save the episode history.',
-            default=None)
+        '--output',
+        dest='output_dir',
+        type=str,
+        help='The output directory to save the episode history.',
+        default=None)
 
     parser.add_argument(
-            '--num_steps',
-            dest='num_steps',
-            type=int,
-            help='Maximum number of time steps for each episode.',
-            default=None)
+        '--num_steps',
+        dest='num_steps',
+        type=int,
+        help='Maximum number of time steps for each episode.',
+        default=None)
 
     parser.add_argument(
-            '--num_episodes',
-            dest='num_episodes',
-            type=int,
-            help='Maximum number of episodes.',
-            default=None)
+        '--num_episodes',
+        dest='num_episodes',
+        type=int,
+        help='Maximum number of episodes.',
+        default=None)
 
     parser.add_argument(
-            '--num_episodes_per_file',
-            dest='num_episodes_per_file',
-            type=int,
-            help='The maximum number of episodes saved in each file.',
-            default=1000)
+        '--num_episodes_per_file',
+        dest='num_episodes_per_file',
+        type=int,
+        help='The maximum number of episodes saved in each file.',
+        default=1000)
 
     parser.add_argument(
-            '--debug',
-            dest='debug',
-            type=int,
-            help='True for debugging, False otherwise.',
-            default=0)
+        '--debug',
+        dest='debug',
+        type=int,
+        help='True for debugging, False otherwise.',
+        default=0)
 
     parser.add_argument(
-            '--worker_id',
-            dest='worker_id',
-            type=int,
-            help='The worker ID for running multiple simulations in parallel.',
-            default=0)
+        '--worker_id',
+        dest='worker_id',
+        type=int,
+        help='The worker ID for running multiple simulations in parallel.',
+        default=0)
 
     parser.add_argument(
-            '--seed',
-            dest='seed',
-            type=int,
-            help='None for random; any fixed integers for deterministic.',
-            default=None)
+        '--seed',
+        dest='seed',
+        type=int,
+        help='None for random; any fixed integers for deterministic.',
+        default=None)
 
     parser.add_argument(
-            '--pause',
-            dest='pause',
-            type=bool,
-            help='Whether to pause between episodes.',
-            default=False)
+        '--pause',
+        dest='pause',
+        type=bool,
+        help='Whether to pause between episodes.',
+        default=False)
 
     parser.add_argument(
-            '--timeout',
-            dest='timeout',
-            type=float,
-            help='Seconds of timeout for an episode.',
-            default=120)
+        '--timeout',
+        dest='timeout',
+        type=float,
+        help='Seconds of timeout for an episode.',
+        default=120)
 
     args = parser.parse_args()
 

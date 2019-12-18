@@ -1,5 +1,6 @@
 """Reward function of the environments.
 """
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -9,7 +10,7 @@ import abc
 
 class RewardFn(object):
     """Reward function of the environments."""
-    
+
     __metaclass__ = abc.ABCMeta
 
     def initialize(self, env):

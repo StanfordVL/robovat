@@ -52,5 +52,5 @@ class Base(object):
                 self._scoped_name = self._name
             else:
                 self._scoped_name = os.path.join(
-                        self.parent.scoped_name, self._name)
+                    self.parent.scoped_name, self._name)
         return self._scoped_name

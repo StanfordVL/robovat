@@ -43,8 +43,7 @@ class SawyerSim(sawyer.Sawyer):
         self._head = None
 
         if joint_positions is None:
-            self._initial_joint_positions = (
-                self.config.LIMB_NEUTRAL_POSITIONS)
+            self._initial_joint_positions = self.config.LIMB_NEUTRAL_POSITIONS
         else:
             self._initial_joint_positions = joint_positions
 
@@ -77,8 +76,8 @@ class SawyerSim(sawyer.Sawyer):
     @property
     def joint_positions(self):
         return dict(
-                (joint.name, joint.position) for joint in self._limb_joints
-                )
+            (joint.name, joint.position) for joint in self._limb_joints
+        )
 
     def reboot(self):
         """Reboot the robot.
@@ -122,26 +121,27 @@ class SawyerSim(sawyer.Sawyer):
 
         # Find the robot parts.
         self._limb_joints = [
-                self._arm.get_joint_by_name(joint_name)
-                for joint_name in self.config.LIMB_JOINT_NAMES]
+            self._arm.get_joint_by_name(joint_name)
+            for joint_name in self.config.LIMB_JOINT_NAMES
+        ]
         self._limb_inds = [joint.index for joint in self._limb_joints]
 
         self._end_effector = self._arm.get_link_by_name(
-                self.config.END_EFFCTOR_NAME)
+            self.config.END_EFFCTOR_NAME)
 
         try:
             self._l_finger_joint = self._arm.get_joint_by_name(
-                    self.config.L_FINGER_NAME)
+                self.config.L_FINGER_NAME)
             self._r_finger_joint = self._arm.get_joint_by_name(
-                    self.config.R_FINGER_NAME)
+                self.config.R_FINGER_NAME)
             self._l_finger_tip = self._arm.get_link_by_name(
-                    self.config.L_FINGER_TIP_NAME)
+                self.config.L_FINGER_TIP_NAME)
             self._r_finger_tip = self._arm.get_link_by_name(
-                    self.config.R_FINGER_TIP_NAME)
+                self.config.R_FINGER_TIP_NAME)
             self._gripper_inds = [
-                    self._l_finger_joint.index,
-                    self._r_finger_joint.index
-                    ]
+                self._l_finger_joint.index,
+                self._r_finger_joint.index
+            ]
             self._gripper_ready_time = 0
             self._has_gripper = True
         except Exception:
@@ -150,7 +150,7 @@ class SawyerSim(sawyer.Sawyer):
 
         # Reset the positions.
         assert len(self._limb_inds) == len(
-                self.config.LIMB_NEUTRAL_POSITIONS)
+            self.config.LIMB_NEUTRAL_POSITIONS)
         assert len(self._limb_inds) == len(self._initial_joint_positions)
 
         for i, joint_ind in enumerate(self._limb_inds):
@@ -159,9 +159,9 @@ class SawyerSim(sawyer.Sawyer):
 
         if self._has_gripper:
             self._l_finger_joint.position = (
-                    self._l_finger_joint.upper_limit)
+                self._l_finger_joint.upper_limit)
             self._r_finger_joint.position = (
-                    self._r_finger_joint.lower_limit)
+                self._r_finger_joint.lower_limit)
 
             if self.config.OPEN_GRIPPER_WHEN_RESET:
                 self.grip(0)
@@ -201,31 +201,31 @@ class SawyerSim(sawyer.Sawyer):
 
         # Set the maximal joint velocities.
         joint_velocities = dict([
-                (joint.name, speed * joint.max_velocity)
-                for joint in self._limb_joints
-                ])
+            (joint.name, speed * joint.max_velocity)
+            for joint in self._limb_joints
+            ])
         kwargs = {
-                'joint_velocities': joint_velocities,
-                }
+            'joint_velocities': joint_velocities,
+        }
 
         robot_command = RobotCommand(
-                component=self._arm.name,
-                command_type='set_max_joint_velocities',
-                arguments=kwargs)
+            component=self._arm.name,
+            command_type='set_max_joint_velocities',
+            arguments=kwargs)
 
         self._send_robot_command(robot_command)
 
         # Command the position control.
         kwargs = {
-                'joint_positions': positions,
-                'timeout': timeout,
-                'threshold': threshold,
-                }
+            'joint_positions': positions,
+            'timeout': timeout,
+            'threshold': threshold,
+        }
 
         robot_command = RobotCommand(
-                component=self._arm.name,
-                command_type='set_target_joint_positions',
-                arguments=kwargs)
+            component=self._arm.name,
+            command_type='set_target_joint_positions',
+            arguments=kwargs)
 
         self._send_robot_command(robot_command)
 
@@ -274,32 +274,32 @@ class SawyerSim(sawyer.Sawyer):
         else:
             # Set the maximal joint velocities.
             joint_velocities = dict([
-                    (joint.name, speed * joint.max_velocity)
-                    for joint in self._limb_joints
-                    ])
+                (joint.name, speed * joint.max_velocity)
+                for joint in self._limb_joints
+                ])
             kwargs = {
-                    'joint_velocities': joint_velocities,
-                    }
+                'joint_velocities': joint_velocities,
+            }
 
             robot_command = RobotCommand(
-                    component=self._arm.name,
-                    command_type='set_max_joint_velocities',
-                    arguments=kwargs)
+                component=self._arm.name,
+                command_type='set_max_joint_velocities',
+                arguments=kwargs)
 
             self._send_robot_command(robot_command)
 
             # Command the IK control.
             kwargs = {
-                    'link_ind': self._end_effector.index,
-                    'link_pose': pose,
-                    'timeout': timeout,
-                    'threshold': threshold,
-                    }
+                'link_ind': self._end_effector.index,
+                'link_pose': pose,
+                'timeout': timeout,
+                'threshold': threshold,
+            }
 
             robot_command = RobotCommand(
-                    component=self._arm.name,
-                    command_type='set_target_link_pose',
-                    arguments=kwargs)
+                component=self._arm.name,
+                command_type='set_target_link_pose',
+                arguments=kwargs)
 
             self._send_robot_command(robot_command)
 
@@ -325,33 +325,33 @@ class SawyerSim(sawyer.Sawyer):
 
         # Set the maximal joint velocities.
         joint_velocities = dict([
-                (joint.name, speed * joint.max_velocity)
-                for joint in self._limb_joints
-                ])
+            (joint.name, speed * joint.max_velocity)
+            for joint in self._limb_joints
+        ])
         kwargs = {
-                'joint_velocities': joint_velocities,
-                }
+            'joint_velocities': joint_velocities,
+        }
 
         robot_command = RobotCommand(
-                component=self._arm.name,
-                command_type='set_max_joint_velocities',
-                arguments=kwargs)
+            component=self._arm.name,
+            command_type='set_max_joint_velocities',
+            arguments=kwargs)
 
         self._send_robot_command(robot_command)
 
         # Command the IK control.
 
         kwargs = {
-                'link_ind': self._end_effector.index,
-                'link_poses': poses,
-                'timeout': timeout,
-                'threshold': threshold,
-                }
+            'link_ind': self._end_effector.index,
+            'link_poses': poses,
+            'timeout': timeout,
+            'threshold': threshold,
+        }
 
         robot_command = RobotCommand(
-                component=self._arm.name,
-                command_type='set_target_link_poses',
-                arguments=kwargs)
+            component=self._arm.name,
+            command_type='set_target_link_poses',
+            arguments=kwargs)
 
         self._send_robot_command(robot_command)
 
@@ -360,7 +360,7 @@ class SawyerSim(sawyer.Sawyer):
 
         See the parent class.
         """
-        # Clip the value. The fingers somtimes stuck in the max/min # positions.
+        # Clip the value. The fingers somtimes stuck in the max/min positions.
         value = np.clip(value, 0.01, 0.99)
 
         l_finger_position = (self._l_finger_joint.upper_limit -
@@ -369,20 +369,20 @@ class SawyerSim(sawyer.Sawyer):
                              value * self._r_finger_joint.range)
 
         joint_positions = {
-                self._l_finger_joint.name: l_finger_position,
-                self._r_finger_joint.name: r_finger_position,
-                }
+            self._l_finger_joint.name: l_finger_position,
+            self._r_finger_joint.name: r_finger_position,
+        }
 
         # Command the position control.
         kwargs = {
-                'joint_positions': joint_positions,
-                'timeout': 10000,
-                }
+            'joint_positions': joint_positions,
+            'timeout': 10000,
+        }
 
         robot_command = RobotCommand(
-                component=self._arm.name,
-                command_type='set_target_joint_positions',
-                arguments=kwargs)
+            component=self._arm.name,
+            command_type='set_target_joint_positions',
+            arguments=kwargs)
 
         self._send_robot_command(robot_command)
         self._gripper_ready_time = self._arm.physics.time() + 0.5

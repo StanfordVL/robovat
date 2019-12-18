@@ -98,12 +98,12 @@ class Joint(Base):
             max_force = self.limit['effort']
 
         self.physics.pos_control(
-                self.uid,
-                position=position,
-                velocity=velocity,
-                max_force=max_force,
-                position_gain=position_gain,
-                velocity_gain=velocity_gain)
+            self.uid,
+            position=position,
+            velocity=velocity,
+            max_force=max_force,
+            position_gain=position_gain,
+            velocity_gain=velocity_gain)
 
     def velocity_control(self, velocity, max_force=None,
                          position_gain=None, velocity_gain=None):
@@ -112,17 +112,17 @@ class Joint(Base):
             max_force = self.limit['effort']
 
         self.physics.vel_control(
-                self.uid,
-                velocity=velocity,
-                max_force=max_force,
-                position_gain=position_gain,
-                velocity_gain=velocity_gain)
+            self.uid,
+            velocity=velocity,
+            max_force=max_force,
+            position_gain=position_gain,
+            velocity_gain=velocity_gain)
 
     def torque_control(self, torque):
         """Torque control."""
         self.physics.torque_control(
-                self.uid,
-                torque=torque)
+            self.uid,
+            torque=torque)
 
     def enable_sensor(self):
         """Enable the force/torque sensor of this joint."""

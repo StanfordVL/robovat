@@ -35,8 +35,8 @@ def transform(data, translation, theta):
     full_map = full_map[:2, :]
 
     transformed_data = cv2.warpAffine(
-            data, full_map, (data.shape[1], data.shape[0]),
-            flags=cv2.INTER_NEAREST)
+        data, full_map, (data.shape[1], data.shape[0]),
+        flags=cv2.INTER_NEAREST)
 
     return transformed_data.astype(data.dtype)
 
@@ -73,10 +73,11 @@ def crop(data, height, width, c0=None, c1=None):
 
     pil_image = PIL.Image.fromarray(data)
     cropped_pil_image = pil_image.crop(
-            (desired_start_col,
-             desired_start_row,
-             desired_end_col,
-             desired_end_row))
+        (desired_start_col,
+         desired_start_row,
+         desired_end_col,
+         desired_end_row)
+    )
     crop_data = np.array(cropped_pil_image)
 
     if crop_data.shape[0] != height or crop_data.shape[1] != width:

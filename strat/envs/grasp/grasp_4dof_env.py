@@ -46,11 +46,11 @@ class Grasp4DofEnv(arm_env.ArmEnv):
 
         # Camera.
         self.camera = self.create_camera(
-                height=self.config.KINECT2.DEPTH.HEIGHT,
-                width=self.config.KINECT2.DEPTH.WIDTH,
-                intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
-                translation=self.config.KINECT2.DEPTH.TRANSLATION,
-                rotation=self.config.KINECT2.DEPTH.ROTATION)
+            height=self.config.KINECT2.DEPTH.HEIGHT,
+            width=self.config.KINECT2.DEPTH.WIDTH,
+            intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
+            translation=self.config.KINECT2.DEPTH.TRANSLATION,
+            rotation=self.config.KINECT2.DEPTH.ROTATION)
 
         # Graspable object.
         if self.simulator:
@@ -75,37 +75,38 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             self.all_graspable_paths.sort()
             num_graspable_paths = len(self.all_graspable_paths)
             assert num_graspable_paths > 0, (
-                    'Found no graspable objects at %s'
-                    % (self.config.SIM.GRASPABLE.PATHS))
+                'Found no graspable objects at %s'
+                % (self.config.SIM.GRASPABLE.PATHS))
             logger.debug('Found %d graspable objects.', num_graspable_paths)
 
         # Observations.
         observations = [
                 camera_obs.CameraObs(
-                        name=self.config.OBSERVATION.TYPE,
-                        camera=self.camera,
-                        modality=self.config.OBSERVATION.TYPE,
-                        max_visible_distance_m=None),
+                    name=self.config.OBSERVATION.TYPE,
+                    camera=self.camera,
+                    modality=self.config.OBSERVATION.TYPE,
+                    max_visible_distance_m=None),
                 camera_obs.CameraIntrinsicsObs(
-                        name='intrinsics',
-                        camera=self.camera),
+                    name='intrinsics',
+                    camera=self.camera),
                 camera_obs.CameraTranslationObs(
-                        name='translation',
-                        camera=self.camera),
+                    name='translation',
+                    camera=self.camera),
                 camera_obs.CameraRotationObs(
-                        name='rotation',
-                        camera=self.camera)
+                    name='rotation',
+                    camera=self.camera)
         ]
 
         # Reward functions.
         if self.simulator is None:
             raise NotImplementedError(
-                    'Need to implement the real-world grasping reward.')
+                'Need to implement the real-world grasping reward.'
+            )
         reward_fns = [
-                GraspReward(
-                        name='grasp_reward',
-                        end_effector_name=sawyer.SawyerSim.ARM_NAME,
-                        graspable_name=GRASPABLE_NAME)
+            GraspReward(
+                name='grasp_reward',
+                end_effector_name=sawyer.SawyerSim.ARM_NAME,
+                graspable_name=GRASPABLE_NAME)
         ]
 
         super(Grasp4DofEnv, self).__init__(
@@ -137,9 +138,9 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             height = self.camera.height
             width = self.camera.width
             return gym.spaces.Box(
-                    low=np.array([0, 0, 0, 0, -(2*24 - 1)]),
-                    high=np.array([width, height, width, height, 2*24 - 1]),
-                    dtype=np.float32)
+                low=np.array([0, 0, 0, 0, -(2*24 - 1)]),
+                high=np.array([width, height, width, height, 2*24 - 1]),
+                dtype=np.float32)
         else:
             raise ValueError
 
@@ -162,7 +163,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 self.graspable_index = ((self.graspable_index + 1) %
                                         len(self.all_graspable_paths))
                 self.graspable_path = (
-                        self.all_graspable_paths[self.graspable_index])
+                    self.all_graspable_paths[self.graspable_index])
 
         pose = Pose.uniform(x=self.config.SIM.GRASPABLE.POSE.X,
                             y=self.config.SIM.GRASPABLE.POSE.Y,
@@ -175,19 +176,19 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         logger.info('Loaded the graspable object from %s with scale %.2f...',
                     self.graspable_path, scale)
         self.graspable = self.simulator.add_body(
-                self.graspable_path, pose, scale=scale, name=GRASPABLE_NAME)
+            self.graspable_path, pose, scale=scale, name=GRASPABLE_NAME)
         logger.debug('Waiting for graspable objects to be stable...')
         self.simulator.wait_until_stable(self.graspable)
 
         # Reset camera.
         self.reset_camera(
-                self.camera,
-                intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
-                translation=self.config.KINECT2.DEPTH.TRANSLATION,
-                rotation=self.config.KINECT2.DEPTH.ROTATION,
-                intrinsics_noise=self.config.KINECT2.DEPTH.INTRINSICS_NOISE,
-                translation_noise=self.config.KINECT2.DEPTH.TRANSLATION_NOISE,
-                rotation_noise=self.config.KINECT2.DEPTH.ROTATION_NOISE)
+            self.camera,
+            intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
+            translation=self.config.KINECT2.DEPTH.TRANSLATION,
+            rotation=self.config.KINECT2.DEPTH.ROTATION,
+            intrinsics_noise=self.config.KINECT2.DEPTH.INTRINSICS_NOISE,
+            translation_noise=self.config.KINECT2.DEPTH.TRANSLATION_NOISE,
+            rotation_noise=self.config.KINECT2.DEPTH.ROTATION_NOISE)
 
     def reset_robot(self):
         """Reset the robot in simulation or the real world.
@@ -211,7 +212,8 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 'Unrecognized action type: %r' % (self.config.ACTION.TYPE))
 
         start = Pose(
-            [[x, y, z + self.config.ARM.FINGER_TIP_OFFSET], [0, np.pi, angle]])
+            [[x, y, z + self.config.ARM.FINGER_TIP_OFFSET], [0, np.pi, angle]]
+        )
 
         phase = 'initial'
 
@@ -232,7 +234,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
 
                 if phase == 'overhead':
                     self.robot.move_to_joint_positions(
-                            self.config.ARM.OVERHEAD_POSITIONS)
+                        self.config.ARM.OVERHEAD_POSITIONS)
                     # self.robot.grip(0)
 
                 elif phase == 'prestart':
@@ -246,13 +248,13 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                     # Prevent problems caused by unrealistic frictions.
                     if self.simulator:
                         self.robot.l_finger_tip.set_dynamics(
-                                lateral_friction=0.001,
-                                spinning_friction=0.001)
+                            lateral_friction=0.001,
+                            spinning_friction=0.001)
                         self.robot.r_finger_tip.set_dynamics(
-                                lateral_friction=0.001,
-                                spinning_friction=0.001)
+                            lateral_friction=0.001,
+                            spinning_friction=0.001)
                         self.table.set_dynamics(
-                                lateral_friction=100)
+                            lateral_friction=100)
 
                 elif phase == 'end':
                     self.robot.grip(1)
@@ -260,21 +262,22 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 elif phase == 'postend':
                     postend = self.robot.end_effector.pose
                     postend.z = self.config.ARM.GRIPPER_SAFE_HEIGHT
-                    self.robot.move_to_gripper_pose(postend, straight_line=True)
+                    self.robot.move_to_gripper_pose(
+                        postend, straight_line=True)
 
                     # Prevent problems caused by unrealistic frictions.
                     if self.simulator:
                         self.robot.l_finger_tip.set_dynamics(
-                                lateral_friction=100,
-                                rolling_friction=10,
-                                spinning_friction=10)
+                            lateral_friction=100,
+                            rolling_friction=10,
+                            spinning_friction=10)
                         self.robot.r_finger_tip.set_dynamics(
-                                lateral_friction=100,
-                                rolling_friction=10,
-                                spinning_friction=10)
+                            lateral_friction=100,
+                            rolling_friction=10,
+                            spinning_friction=10)
                         self.table.set_dynamics(
-                                lateral_friction=1)
-        
+                            lateral_friction=1)
+
     def get_next_phase(self, phase):
         """Get the next phase of the current phase.
 
