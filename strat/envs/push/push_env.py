@@ -19,6 +19,7 @@ from matplotlib import pyplot as plt
 
 from strat.envs import arm_env
 from strat.envs import robot_env
+from strat.envs.push import layouts
 from strat.observations import attribute_obs
 from strat.observations import camera_obs
 from strat.observations import pose_obs
@@ -54,25 +55,18 @@ class PushEnv(arm_env.ArmEnv):
             rotation=self.config.KINECT2.DEPTH.ROTATION)
 
         # Layout.
-        assert self.config.LAYOUT_ID is not None
+        self.task_name = self.config.TASK_NAME
         self.layout_id = self.config.LAYOUT_ID
 
-        if self.config.TASK_NAME is None:
-            self.layout_configs = None
-        elif self.config.TASK_NAME == 'data_collection':
-            self.layout_configs = None
-        else:
-            capitalized_task_name = self.config.TASK_NAME.upper()
-            layout_names = self.config.TASK[capitalized_task_name].LAYOUT_NAMES
-            self.layout_configs = [
-                self.config.LAYOUT[layout_name]
-                for layout_name in layout_names
-            ]
-
-        if self.layout_configs is None:
+        if self.task_name is None:
+            self.layouts = None
+            self.num_layouts = 1
+        elif self.task_name == 'data_collection':
+            self.layouts = None
             self.num_layouts = 1
         else:
-            self.num_layouts = len(self.layout_configs)
+            self.layouts = layouts.TASK_NAME_TO_LAYOUTS[self.task_name]
+            self.num_layouts = len(self.layouts)
 
         # Action and configuration space.
         self.num_goal_steps = self.config.NUM_GOAL_STEPS
@@ -151,11 +145,8 @@ class PushEnv(arm_env.ArmEnv):
         reward_fns = [
             push_reward.PushReward(
                 name='reward',
-                task_name=self.config.TASK_NAME,
-                layout_configs=self.layout_configs,
+                task_name=self.task_name,
                 layout_id=self.layout_id,
-                use_time_penalty=self.config.USE_TIME_PENALTY,
-                use_dense_reward=self.config.USE_DENSE_REWARD,
                 is_planning=False
             )
         ]
@@ -296,15 +287,14 @@ class PushEnv(arm_env.ArmEnv):
             if not os.path.exists(recording_tmp_dir):
                 os.makedirs(recording_tmp_dir)
 
-            if self.config.TASK_NAME is None:
+            if self.task_name is None:
                 recording_output_dir = os.path.join(
                         self.config.RECORDING.OUTPUT_DIR,
                         'data_collection')
             else:
                 recording_output_dir = os.path.join(
                         self.config.RECORDING.OUTPUT_DIR,
-                        '%s_layout%02d' % (self.config.TASK_NAME,
-                                           self.layout_id)
+                        '%s_layout%02d' % (self.task_name, self.layout_id)
                 )
 
             if not os.path.exists(recording_output_dir):
@@ -337,14 +327,6 @@ class PushEnv(arm_env.ArmEnv):
         """Reset the scene in simulation or the real world."""
         super(PushEnv, self).reset_scene()
 
-        # Layout.
-        if self.config.LAYOUT_ID is None:
-            self.layout_id = np.random.choice(len(self.layout_configs))
-            assert self.simulator is not None, (
-                'The layout must be specified in the real world.')
-        else:
-            self.layout_id = self.config.LAYOUT_ID
-
         # Simulation.
         if self.simulator:
             self.num_movable_bodies = np.random.randint(
@@ -353,19 +335,21 @@ class PushEnv(arm_env.ArmEnv):
 
             self._load_movable_bodies()
 
-            if self.layout_configs is not None:
-
-                layout_config = self.layout_configs[self.layout_id]
+            if self.layouts is not None:
+                layout = self.layouts[self.layout_id]
                 self._load_tiles(
-                    layout_config.REGION,
-                    layout_config.SIZE,
-                    layout_config.OFFSET,
-                    z_offset=0.001 - 0.025)
-                self._load_tiles(
-                    layout_config.GOAL,
-                    layout_config.SIZE,
-                    layout_config.OFFSET,
-                    z_offset=0.0015 - 0.025)
+                    layout.region,
+                    layout.size,
+                    layout.offset,
+                    z_offset=0.001 - 0.025,
+                    rgba=layout.region_rgba)
+                if layout.goal is not None:
+                    self._load_tiles(
+                        layout.goal,
+                        layout.size,
+                        layout.offset,
+                        z_offset=0.0015 - 0.025,
+                        rgba=layout.goal_rgba)
         else:
             self.num_movable_bodies = self.max_movable_bodies
             logger.info('Assume there are %d movable objects on the table.',
@@ -385,28 +369,27 @@ class PushEnv(arm_env.ArmEnv):
             'is_effective': True,
         }
 
-    def _load_tiles(self, tile_config, size, offset, z_offset=0.0):
+    def _load_tiles(self, centers, size, offset, z_offset=0.0, rgba=[0, 0, 0]):
         """Load tiles to the scene.
 
         Args:
-            tile_config: Configuration of the tiles.
+            centers: Configuration of the tiles.
             size: Side length of each tile.
             offset: List of x-y position offsets.
             z_offset: Offset of the z dimension.
+            rgba: The color of the tile.
         """
-        if tile_config is not None:
-            path = self.config.SIM.TILE.PATH
-            rgba = tile_config.RGBA
-            for i, center in enumerate(tile_config.CENTERS):
-                position = np.array(offset) + np.array(center) * size
-                height = self.table.position.z + z_offset
-                position = np.array([position[0], position[1], height])
-                euler = np.array([0, 0, 0])
-                pose = np.array([position, euler])
-                name = 'tile_%d' % i
-                body = self.simulator.add_body(
-                        path, pose, is_static=True, name=name)
-                body.set_color(rgba=rgba, specular=[0, 0, 0])
+        path = self.config.SIM.TILE.PATH
+        for i, center in enumerate(centers):
+            position = np.array(offset) + np.array(center) * size
+            height = self.table.position.z + z_offset
+            position = np.array([position[0], position[1], height])
+            euler = np.array([0, 0, 0])
+            pose = np.array([position, euler])
+            name = 'tile_%d' % i
+            body = self.simulator.add_body(
+                    path, pose, is_static=True, name=name)
+            body.set_color(rgba=rgba, specular=[0, 0, 0])
 
     def _load_movable_bodies(self):
         """Load movable bodies."""
@@ -420,16 +403,16 @@ class PushEnv(arm_env.ArmEnv):
 
             # Sample placements of the movable objects.
             is_target = False
-            if self.layout_configs is None:
+            if self.layouts is None:
                 movable_poses = self._sample_body_poses(
                     self.num_movable_bodies, self.movable_config)
             else:
-                layout_config = self.layout_configs[self.layout_id]
+                layout = self.layouts[self.layout_id]
                 movable_poses = self._sample_body_poses_on_tiles(
                     self.num_movable_bodies,
                     self.movable_config,
-                    layout_config)
-                is_target = (layout_config.TARGET is not None)
+                    layout)
+                is_target = (layout.target is not None)
 
             for i in range(self.num_movable_bodies):
 
@@ -537,7 +520,7 @@ class PushEnv(arm_env.ArmEnv):
     def _sample_body_poses_on_tiles(self,
                                     num_samples,
                                     body_config,
-                                    layout_config,
+                                    layout,
                                     safe_drop_height=0.2,
                                     max_attemps=32):
         """Sample tile poses on the tiles.
@@ -545,7 +528,7 @@ class PushEnv(arm_env.ArmEnv):
         Args:
             num_samples: Number of samples.
             body_config: Configuration of the body.
-            layout_config: Configuration of the layout.
+            layout: Configuration of the layout.
             safe_drop_height: Dropping height of the body.
             max_attemps: Maximum number of attemps to find a feasible
                 placement.
@@ -553,8 +536,8 @@ class PushEnv(arm_env.ArmEnv):
         Returns:
             List of poses.
         """
-        tile_size = layout_config.SIZE
-        tile_offset = layout_config.OFFSET
+        tile_size = layout.size
+        tile_offset = layout.offset
 
         while True:
             movable_poses = []
@@ -563,15 +546,15 @@ class PushEnv(arm_env.ArmEnv):
                 num_attemps = 0
                 is_valid = False
 
-                if i == 0 and layout_config.TARGET is not None:
-                    tile_config = layout_config.TARGET
+                if i == 0 and layout.target is not None:
+                    tile_config = layout.target
                 else:
-                    tile_config = layout_config.OBSTACLE
+                    tile_config = layout.obstacle
 
                 while not is_valid and num_attemps <= max_attemps:
-                    num_tiles = len(tile_config.CENTERS)
+                    num_tiles = len(tile_config)
                     tile_id = np.random.choice(num_tiles)
-                    tile_center = tile_config.CENTERS[tile_id]
+                    tile_center = tile_config[tile_id]
                     x_range = [
                         tile_offset[0] + (tile_center[0] - 0.5) * tile_size,
                         tile_offset[0] + (tile_center[0] + 0.5) * tile_size]
@@ -1028,7 +1011,8 @@ class PushEnv(arm_env.ArmEnv):
                                          alpha=0.5)
 
         # Plot waypoints in simulation.
-        if self.simulator:
+        if self.simulator and self.num_goal_steps is None:
+            waypoints = self._compute_waypoints(actions)
             self._plot_waypoints_in_simulation(waypoints)
 
         plt.draw()

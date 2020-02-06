@@ -23,7 +23,7 @@ class HeuristicPushSampler(object):
                  translation_y,
                  start_margin=0.05,
                  motion_margin=0.01,
-                 max_attemps=512):
+                 max_attemps=20000):
         """Initialize.
 
         Args:

@@ -1,5 +1,0 @@
-!include strat/envs/configs/push_env.yaml
-
-
-MAX_MOVABLE_BODIES: 3
-NUM_GOAL_STEPS: 3

@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import numpy as np
 
+from strat.envs.push import layouts as push_layouts
 from strat.reward_fns import reward_fn
 from strat.utils.logging import logger  # NOQA
 
@@ -46,18 +47,18 @@ def dummy_reward_fn(state, next_state):
     return reward, termination
 
 
-def get_tiles(layout_config, size, offset):
+def get_tiles(centers, size, offset):
     tiles = [np.array(offset) + np.array(center) * size
-             for center in layout_config['CENTERS']]
+             for center in centers]
     tiles = np.stack(tiles, axis=0)
     return tiles
 
 
-def check_on_tiles(position, layout_config, size, offset, max_dist=None):
+def check_on_tiles(position, centers, size, offset, max_dist=None):
     if max_dist is None:
         max_dist = size
 
-    tiles = get_tiles(layout_config, size, offset)
+    tiles = get_tiles(centers, size, offset)
     assert len(position.shape) == 2
     assert len(tiles.shape) == 2
     dists = np.expand_dims(position, axis=1) - np.expand_dims(tiles, axis=0)
@@ -66,26 +67,26 @@ def check_on_tiles(position, layout_config, size, offset, max_dist=None):
     return np.any(is_on_tiles, axis=1)
 
 
-def get_tile_dists(position, layout_config, size, offset):
-    tiles = get_tiles(layout_config, size, offset)
+def get_tile_dists(position, centers, size, offset):
+    tiles = get_tiles(centers, size, offset)
     dists = np.expand_dims(position, axis=1) - np.expand_dims(tiles, axis=0)
     dists = np.linalg.norm(dists, axis=-1)
     dists = dists.min(axis=1)
     return dists
 
 
-def clearing_termination(state, next_state, layout_config, is_planning):
+def clearing_termination(state, next_state, layout, is_planning):
     raise NotImplementedError
 
 
-def clearing_goal(state, layout_config):
+def clearing_goal(state, layout):
     num_bodies = state.shape[1]
     for i in range(num_bodies):
         is_clear_i = np.logical_not(
             check_on_tiles(state[:, i, :],
-                           layout_config['REGION'],
-                           1.25 * layout_config['SIZE'],
-                           layout_config['OFFSET'])
+                           layout.region,
+                           layout.size * 1.25,
+                           layout.offset)
         )
         if i == 0:
             goal_reached = is_clear_i
@@ -97,7 +98,7 @@ def clearing_goal(state, layout_config):
     return goal_reached
 
 
-def clearing_score(state, layout_config):
+def clearing_score(state, layout):
     dists1 = np.mean(np.abs(state[:, :, 0] - CLEARING_GOAL_X), axis=1)
     dists2 = np.mean(np.abs(state[:, :, 1] - CLEARING_GOAL_Y), axis=1)
     dists3 = np.mean(np.abs(state[:, :, 1] + CLEARING_GOAL_Y), axis=1)
@@ -106,7 +107,7 @@ def clearing_score(state, layout_config):
     return -dists
 
 
-def insertion_termination(state, next_state, layout_config, is_planning):
+def insertion_termination(state, next_state, layout, is_planning):
     num_bodies = next_state.shape[1]
 
     middle_state1 = state + (1. / 3.) * (next_state - state)
@@ -115,20 +116,28 @@ def insertion_termination(state, next_state, layout_config, is_planning):
     for i in range(num_bodies):
         if is_planning:
             termination_i_0 = check_on_tiles(
-                next_state[:, i, :], layout_config['REGION'],
-                1.25 * layout_config['SIZE'], layout_config['OFFSET'])
+                next_state[:, i, :],
+                layout.region,
+                layout.size * 1.25,
+                layout.offset)
             termination_i_1 = check_on_tiles(
-                middle_state1[:, i, :], layout_config['REGION'],
-                1.25 * layout_config['SIZE'], layout_config['OFFSET'])
+                middle_state1[:, i, :],
+                layout.region,
+                layout.size * 1.25,
+                layout.offset)
             termination_i_2 = check_on_tiles(
-                middle_state2[:, i, :], layout_config['REGION'],
-                1.25 * layout_config['SIZE'], layout_config['OFFSET'])
+                middle_state2[:, i, :],
+                layout.region,
+                layout.size * 1.25,
+                layout.offset)
             termination_i = np.logical_or(termination_i_1, termination_i_2)
             termination_i = np.logical_or(termination_i_0, termination_i)
         else:
             termination_i = check_on_tiles(
-                next_state[:, i, :], layout_config['REGION'],
-                layout_config['SIZE'], layout_config['OFFSET'])
+                next_state[:, i, :],
+                layout.region,
+                layout.size * 1.25,
+                layout.offset)
 
         if i == 0:
             termination = termination_i
@@ -142,55 +151,71 @@ def insertion_termination(state, next_state, layout_config, is_planning):
         return np.zeros_like(termination)
 
 
-def insertion_goal(state, layout_config):
-    return check_on_tiles(state[:, 0, :], layout_config['GOAL'],
-                          layout_config['SIZE'], layout_config['OFFSET'])
+def insertion_goal(state, layout):
+    return check_on_tiles(state[:, 0, :],
+                          layout.goal,
+                          layout.size,
+                          layout.offset)
 
 
-def insertion_score(state, layout_config):
-    return -get_tile_dists(state[:, 0, :], layout_config['GOAL'],
-                           layout_config['SIZE'], layout_config['OFFSET'])
+def insertion_score(state, layout):
+    return -get_tile_dists(state[:, 0, :],
+                           layout.goal,
+                           layout.size,
+                           layout.offset)
 
 
-def crossing_termination(state, next_state, layout_config, is_planning):
+def crossing_termination(state, next_state, layout, is_planning):
     middle_state1 = state + (1. / 3.) * (next_state - state)
     middle_state2 = state + (2. / 3.) * (next_state - state)
 
     if is_planning:
         is_on_brige0 = check_on_tiles(
-            next_state[:, 0, :], layout_config['REGION'],
-            layout_config['SIZE'], layout_config['OFFSET'],
-            max_dist=1.0 * layout_config['SIZE'])
+            next_state[:, 0, :],
+            layout.region,
+            layout.size,
+            layout.offset,
+            max_dist=layout.size)
         is_on_brige1 = check_on_tiles(
-            middle_state1[:, 0, :], layout_config['REGION'],
-            layout_config['SIZE'], layout_config['OFFSET'],
-            max_dist=1.0 * layout_config['SIZE'])
+            middle_state1[:, 0, :],
+            layout.region,
+            layout.size,
+            layout.offset,
+            max_dist=layout.size)
         is_on_brige2 = check_on_tiles(
-            middle_state2[:, 0, :], layout_config['REGION'],
-            layout_config['SIZE'], layout_config['OFFSET'],
-            max_dist=1.0 * layout_config['SIZE'])
+            middle_state2[:, 0, :],
+            layout.region,
+            layout.size,
+            layout.offset,
+            max_dist=layout.size)
         is_on_brige = np.logical_and(is_on_brige1, is_on_brige2)
         is_on_brige = np.logical_and(is_on_brige0, is_on_brige)
     else:
         is_on_brige = check_on_tiles(
-            next_state[:, 0, :], layout_config['REGION'],
-            layout_config['SIZE'], layout_config['OFFSET'],
-            max_dist=1.5 * layout_config['SIZE'])
+            next_state[:, 0, :],
+            layout.region,
+            layout.size,
+            layout.offset,
+            max_dist=layout.size * 1.5)
     return np.logical_not(is_on_brige)
 
 
-def crossing_goal(state, layout_config):
-    return check_on_tiles(state[:, 0, :], layout_config['GOAL'],
-                          layout_config['SIZE'], layout_config['OFFSET'])
+def crossing_goal(state, layout):
+    return check_on_tiles(state[:, 0, :],
+                          layout.goal,
+                          layout.size,
+                          layout.offset)
 
 
-def crossing_score(state, layout_config):
-    return -get_tile_dists(state[:, 0, :], layout_config['GOAL'],
-                           layout_config['SIZE'], layout_config['OFFSET'])
+def crossing_score(state, layout):
+    return -get_tile_dists(state[:, 0, :],
+                           layout.goal,
+                           layout.size,
+                           layout.offset)
 
 
 def check_collision(state,
-                    layout_config,
+                    layout,
                     is_planning,
                     min_dist=0.15,
                     weight=10.0):
@@ -244,8 +269,7 @@ def check_target_border(state,
     return violate_border
 
 
-def get_reward_fn(task_name,
-                  layout_configs,
+def get_reward_fn(task_name,  # NOQA
                   layout_id,
                   goal_reward=100.0,
                   termination_reward=-100.0,
@@ -273,8 +297,10 @@ def get_reward_fn(task_name,
     else:
         raise ValueError('Unrecognized manipulation task: %r' % task_name)
 
+    layouts = push_layouts.TASK_NAME_TO_LAYOUTS[task_name]
+
     def reward_fn(state, next_state):
-        layout_config = layout_configs[layout_id]
+        layout = layouts[layout_id]
 
         state = process_state(state)
         next_state = process_state(next_state)
@@ -306,14 +332,14 @@ def get_reward_fn(task_name,
 
         for termination_fn in termination_fns:
             termination_i = termination_fn(
-                state, next_state, layout_config, is_planning)
+                state, next_state, layout, is_planning)
             termination = np.logical_or(termination, termination_i)
 
         penalty_ternmination = termination
 
         # Sparse reward.
         for goal_fn in goal_fns:
-            goal_reached = goal_fn(next_state, layout_config)
+            goal_reached = goal_fn(next_state, layout)
             goal_reached = np.logical_and(
                 goal_reached, np.logical_not(termination))
             reward_i = goal_reward * np.array(goal_reached, dtype=np.float32)
@@ -333,8 +359,8 @@ def get_reward_fn(task_name,
         # Dense reward.
         if use_dense_reward:
             for score_fn in score_fns:
-                score = score_fn(state, layout_config)
-                next_score = score_fn(next_state, layout_config)
+                score = score_fn(state, layout)
+                next_score = score_fn(next_state, layout)
 
                 reward_i = np.abs(next_score - score) * dense_reward
                 reward += reward_i
@@ -354,10 +380,7 @@ class PushReward(reward_fn.RewardFn):
     def __init__(self,
                  name,
                  task_name,
-                 layout_configs,
                  layout_id,
-                 use_time_penalty,
-                 use_dense_reward,
                  is_planning=False):
         """Initialize."""
         self.name = name
@@ -365,10 +388,7 @@ class PushReward(reward_fn.RewardFn):
         self.env = None
         self.reward_fn = get_reward_fn(
             task_name=task_name,
-            layout_configs=layout_configs,
             layout_id=layout_id,
-            use_time_penalty=use_time_penalty,
-            use_dense_reward=use_dense_reward,
             is_planning=is_planning)
 
         self.history = []
