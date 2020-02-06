@@ -14,7 +14,7 @@ import socket
 import subprocess
 
 import _init_paths  # NOQA
-from strat.utils.logging import logger
+from robovat.utils.logging import logger
 
 
 def parse_args():

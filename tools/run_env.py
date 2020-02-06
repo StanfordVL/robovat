@@ -20,14 +20,14 @@ import numpy as np
 import h5py
 
 import _init_paths  # NOQA
-from strat import envs
-from strat import policies
-from strat.io import hdf5_utils
-from strat.io.episode_generation import generate_episodes
-from strat.simulation.simulator import Simulator
-from strat.utils import time_utils
-from strat.utils.logging import logger
-from strat.utils.yaml_config import YamlConfig
+from robovat import envs
+from robovat import policies
+from robovat.io import hdf5_utils
+from robovat.io.episode_generation import generate_episodes
+from robovat.simulation.simulator import Simulator
+from robovat.utils import time_utils
+from robovat.utils.logging import logger
+from robovat.utils.yaml_config import YamlConfig
 
 
 def parse_args():

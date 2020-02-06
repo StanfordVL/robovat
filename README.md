@@ -1,5 +1,5 @@
 
-# strat
+# RoboVat
 
 [Installation](#installation)  
 [Examples](#examples)  
@@ -62,7 +62,7 @@
 
 	Download and unzip the assets folder to the root directory or anywhere else:
 	```bash
-	wget ftp://cs.stanford.edu/cs/cvgl/strat/assets.zip
+	wget ftp://cs.stanford.edu/cs/cvgl/robovat/assets.zip
 	unzip assets.zip
 	```
 
@@ -100,7 +100,7 @@ python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --debug 1
 
 To execute semantic pushing tasks, we can add bindings to the configurations:
 ```bash
-python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --env_config strat/envs/configs/push_env.yaml --policy_config strat/policies/configs/heuristic_push_policy.yaml --config_bindings "{'TASK_NAME':'crossing','LAYOUT_ID':0}" --debug 1
+python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --env_config configs/envs/push_env.yaml --policy_config configs/policies/heuristic_push_policy.yaml --config_bindings "{'TASK_NAME':'crossing','LAYOUT_ID':0}" --debug 1
 ```
 
 ### Process Objects for Simulation

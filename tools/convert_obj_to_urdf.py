@@ -10,8 +10,8 @@ import os
 import numpy as np
 
 import _init_paths  # NOQA
-from strat.utils import mesh_utils
-from strat.utils.logging import logger
+from robovat.utils import mesh_utils
+from robovat.utils.logging import logger
 
 
 # TODO(kuanfang): Temporally remove the V-HACD parameters for simplicity, will

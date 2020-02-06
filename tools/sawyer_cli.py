@@ -18,14 +18,14 @@ import matplotlib.pyplot as plt
 import readline
 
 import _init_paths  # NOQA
-from strat.math import Pose
-from strat.robots import sawyer
-from strat.perception import point_cloud_utils as pc_utils
-from strat.perception.camera import Kinect2
-from strat.simulation import Simulator
-from strat.simulation.camera import BulletCamera
-from strat.utils.yaml_config import YamlConfig
-from strat.utils.logging import logger
+from robovat.math import Pose
+from robovat.robots import sawyer
+from robovat.perception import point_cloud_utils as pc_utils
+from robovat.perception.camera import Kinect2
+from robovat.simulation import Simulator
+from robovat.simulation.camera import BulletCamera
+from robovat.utils.yaml_config import YamlConfig
+from robovat.utils.logging import logger
 
 
 WELCOME = (
@@ -66,7 +66,7 @@ def parse_args():
         dest='env_config',
         type=str,
         help='The configuration file for the environment.',
-        default='strat/envs/configs/arm_env.yaml')
+        default='robovat/envs/configs/arm_env.yaml')
 
     parser.add_argument(
         '--debug',
@@ -221,7 +221,7 @@ class SawyerCLI(object):
             self.camera = Kinect2(
                     packet_pipeline_mode=0,
                     device_num=0,
-                    skip_registration=False,
+                    skip_regirobovation=False,
                     use_inpaint=True)
             self.simulator = None
 
