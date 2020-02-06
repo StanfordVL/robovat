@@ -10,6 +10,7 @@
 
 data
 assets
+configs
 episodes
 outputs
 logs

@@ -55,7 +55,7 @@ class Robot(object):
     def default_config(self):
         """Load the default configuration file."""
         robot_name = camelcase_to_snakecase(type(self).__name__)
-        config_path = os.path.join(os.path.dirname(__file__), 'configs',
+        config_path = os.path.join('configs', 'robots',
                                    '%s.yaml' % (robot_name))
         assert os.path.exists(config_path), (
             'Default configuration file %s does not exist' % (config_path))

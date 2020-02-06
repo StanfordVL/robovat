@@ -105,7 +105,7 @@ class YamlConfig(object):
             with open(fname) as f:
                 return f.read()
 
-        # TODO(kuanfang): Recursively replace the content.
+        # TODO: Recursively replace the content.
         while re.search(include_re, self.file_contents):
             self.file_contents = re.sub(
                     include_re, include_repl, self.file_contents)

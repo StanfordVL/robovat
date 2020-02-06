@@ -1,4 +1,4 @@
-!include strat/envs/configs/push_env.yaml
+!include configs/envs/push_env.yaml
 
 
 DEBUG: 0

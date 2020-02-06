@@ -1,4 +1,4 @@
-!include strat/robots/configs/sawyer.yaml
+!include configs/robots/sawyer.yaml
 
 
 # Default maximum joint velocity ratio, chosen from (0, 1].
