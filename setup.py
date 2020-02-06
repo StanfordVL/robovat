@@ -1,4 +1,4 @@
-"""Install strat.
+"""Install robovat.
 """
 
 from __future__ import absolute_import
@@ -14,13 +14,14 @@ with open('README.md', 'r') as fh:
 
 
 setup(
-    name='strat',
+    name='robovat',
     version='0.1.0',
     author='Kuan Fang',
     author_email='kuanfang@ai.stanford.edu',
     packages=find_packages(),
-    url='http://github.com/kuanfang/strat',
-    description='Stanford Table-top Robotic Arm Toolkit.',
+    url='http://github.com/kuanfang/robovat',
+    description=('RoboVat: A unified toolkit for simulated and real-world '
+                 'robotic task environments.'),
     long_description=long_description,
     install_requires=[
         'easydict==1.9',
@@ -39,6 +40,6 @@ setup(
         'sklearn==0.0',
         'pybullet @ git+https://github.com/bulletphysics/bullet3@6a74f63604ceecd1db5c71036ffb0dbf17294579#egg=pybullet', # NOQA
     ],
-    include_package_data=True,
+    include_package_data=False,
     zip_safe=False,
 )
