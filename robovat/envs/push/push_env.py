@@ -818,6 +818,8 @@ class PushEnv(arm_env.ArmEnv):
                 self.robot.arm.reset_targets()
                 return True
 
+            if self.max_phase_steps is None:
+                return True
             if self.simulator.num_steps >= self.max_phase_steps:
                 if self.config.DEBUG:
                     logger.warning('Phase %s timeout.', self.phase)

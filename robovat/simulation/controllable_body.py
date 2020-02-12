@@ -388,7 +388,6 @@ class ControllableBody(Body):
         """Update control and disturbances."""
         ik_updated = False
 
-        # Link (IK).
         if not self._link_target.is_ready():
             if self.simulator.num_steps % STEPS_TO_CHECK_DONE == 0:
                 if self._check_link_target_done():
@@ -404,7 +403,6 @@ class ControllableBody(Body):
                 if self.check_joints_reached():
                     self._link_target.pop()
 
-        # Joints.
         if not self._joint_target.is_ready():
             if (self.simulator.num_steps % STEPS_TO_CHECK_DONE == 0
                     or ik_updated):
@@ -421,7 +419,9 @@ class ControllableBody(Body):
             True if the target has reached, False otherwise.
         """
         # Check timeout.
-        if self.physics.time() >= self._link_target.stop_time:
+        if self._link_target.stop_time is None:
+            return True
+        elif self.physics.time() >= self._link_target.stop_time:
             return True
 
         # Check queue clear.
@@ -438,7 +438,9 @@ class ControllableBody(Body):
             True if the target has reached, False otherwise.
         """
         # Check timeout.
-        if self.physics.time() >= self._joint_target.stop_time:
+        if self._joint_target.stop_time is None:
+            return True
+        elif self.physics.time() >= self._joint_target.stop_time:
             logger.debug('Time out for the position control.')
             return True
 
@@ -569,6 +571,12 @@ class ControllableBody(Body):
         Returns:
             True if all control commands are done, False otherwise.
         """
+        if self._check_link_target_done():
+            self._link_target.reset()
+
+        if self._check_joint_target_done():
+            self._joint_target.reset()
+
         if joint_inds is None:
             return (self._link_target.is_ready() and
                     self._joint_target.is_ready())

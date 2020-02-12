@@ -119,8 +119,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
     @property
     def default_config(self):
         """Load the default configuration file."""
-        config_path = os.path.join(os.path.dirname(__file__), '..', 'configs',
-                                   'grasp_4dof_env.yaml')
+        config_path = os.path.join('configs', 'envs', 'grasp_4dof_env.yaml')
         assert os.path.exists(config_path), (
                 'Default configuration file %s does not exist' % (config_path))
         return YamlConfig(config_path).as_easydict()

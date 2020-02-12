@@ -13,9 +13,10 @@ import os.path
 import sys
 from builtins import input
 
-import numpy as np  # NOQA
+import numpy as np
 import matplotlib.pyplot as plt
 import readline
+from mpl_toolkits.mplot3d import Axes3D  # NOQA: For 3D plotting
 
 import _init_paths  # NOQA
 from robovat.math import Pose
@@ -66,7 +67,7 @@ def parse_args():
         dest='env_config',
         type=str,
         help='The configuration file for the environment.',
-        default='robovat/envs/configs/arm_env.yaml')
+        default='configs/envs/arm_env.yaml')
 
     parser.add_argument(
         '--debug',
@@ -264,7 +265,7 @@ class SawyerCLI(object):
             if self.mode == 'sim':
                 self.simulator.step()
 
-    def run_command(self, command):
+    def run_command(self, command):  # NOQA
         """Run the input command.
 
         Args:
@@ -382,6 +383,11 @@ class SawyerCLI(object):
 
         # Visualize the camera image.
         elif command_type == 'pointcloud' or command_type == 'pc':
+            if len(words) == 1:
+                num_clusters = 0
+            else:
+                num_clusters = int(words[1])
+
             images = self.camera.frames()
             image = images['rgb']
             depth = images['depth']
@@ -406,23 +412,23 @@ class SawyerCLI(object):
                     point_cloud, num_samples=4096)
             pc_utils.show(downsampled_point_cloud, ax2, axis_range=1.0)
 
-            point_cloud = pc_utils.remove_table(point_cloud)
+            if num_clusters > 0:
+                point_cloud = pc_utils.remove_table(point_cloud)
 
-            segmask = pc_utils.cluster(
-                point_cloud, num_clusters=self.config.MAX_MOVABLE_BODIES,
-                method='dbscan')
-            point_cloud = point_cloud[segmask != -1]
+                segmask = pc_utils.cluster(
+                    point_cloud, num_clusters=num_clusters, method='dbscan')
+                point_cloud = point_cloud[segmask != -1]
 
-            segmask = pc_utils.cluster(
-                point_cloud, num_clusters=self.config.MAX_MOVABLE_BODIES)
-            point_cloud = pc_utils.group_by_labels(
-                point_cloud, segmask, self.config.MAX_MOVABLE_BODIES, 256)
+                segmask = pc_utils.cluster(
+                    point_cloud, num_clusters=num_clusters)
+                point_cloud = pc_utils.group_by_labels(
+                    point_cloud, segmask, num_clusters, 256)
 
-            ax3 = fig.add_subplot(143, projection='3d')
-            pc_utils.show(point_cloud, ax3, axis_range=1.0)
+                ax3 = fig.add_subplot(143, projection='3d')
+                pc_utils.show(point_cloud, ax3, axis_range=1.0)
 
-            ax4 = fig.add_subplot(144)
-            pc_utils.show2d(point_cloud, self.camera, ax4, image=image)
+                ax4 = fig.add_subplot(144)
+                pc_utils.show2d(point_cloud, self.camera, ax4, image=image)
 
             plt.show()
 
