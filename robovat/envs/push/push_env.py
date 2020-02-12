@@ -623,7 +623,7 @@ class PushEnv(arm_env.ArmEnv):
 
         return observation, reward, is_done, info
 
-    def execute_action(self, action):
+    def execute_action(self, action):  # NOQA
         """Execute the robot action.
 
         Args:
@@ -931,7 +931,7 @@ class PushEnv(arm_env.ArmEnv):
 
         return None
 
-    def visualize(self, action, info):
+    def visualize(self, action, info):  # NOQA
         """Visualize the action.
 
         Args:
