@@ -32,7 +32,7 @@
 
 3. **Download assets** 
 
-	Download and unzip the assets folder to the root directory or anywhere else:
+	Download and unzip the assets folder from [Box](https://app.box.com/s/decsiq52cg6w6898ukl60ylmi7gqv2qr) or the FTP link below to the root directory:
 	```bash
 	wget ftp://cs.stanford.edu/cs/cvgl/robovat/data.zip
 	unzip data.zip
