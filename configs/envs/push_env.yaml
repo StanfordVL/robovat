@@ -5,7 +5,7 @@ DEBUG: 1
 
 
 TASK_NAME: null
-LAYOUT_ID: null
+LAYOUT_ID: 0
 
 
 MAX_STEPS: 20

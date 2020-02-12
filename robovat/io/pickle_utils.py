@@ -24,6 +24,13 @@ class PickleWriter(object):
                  output_dir,
                  num_entries_per_file,
                  use_random_name=True):
+        """Initialize.
+
+        Args:
+            output_dir: Output directory.
+            num_entries_per_file: Number of entries in each file.
+            use_random_name: Use randomly generated name if True.
+        """
         self._output_dir = output_dir
         self._num_entries_per_file = num_entries_per_file
         self._use_random_name = use_random_name
@@ -38,6 +45,11 @@ class PickleWriter(object):
             os.makedirs(output_dir)
 
     def __call__(self, data):
+        """Call function.
+
+        Args:
+            data: The input data.
+        """
         # Create a file for saving the episode data.
         if self._num_entries_this_file == 0:
             if self._use_random_name:
@@ -64,11 +76,17 @@ class PickleWriter(object):
         self._num_entries_this_file %= self._num_entries_per_file
 
     def write(self, data):
-        """Write a string record to the file."""
+        """Write a string record to the file.
+
+        Args:
+            data: The input data.
+        """
         pickle.dump(data, self._file, protocol=pickle.HIGHEST_PROTOCOL)
         return 1
 
     def close(self):
+        """Close the pickle file.
+        """
         if self._file is not None:
             self._file.close()
 

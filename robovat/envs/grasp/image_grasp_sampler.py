@@ -1,4 +1,6 @@
 """Image grasp samplers.
+
+Adapted from Jeff Mahler's code.
 """
 
 from __future__ import absolute_import
@@ -20,6 +22,13 @@ from robovat.utils.logging import logger
 
 def surface_normals(depth, edge_pixels):
     """Return an array of the surface normals at the edge pixels.
+
+    Args:
+        depth: The depth image.
+        edge_pixels: The edges of pixels of the image.
+
+    Returns:
+        The array of surface normals.
     """
     # Compute the gradients.
     grad = np.gradient(depth.astype(np.float32))
@@ -44,11 +53,21 @@ def surface_normals(depth, edge_pixels):
 
 def force_closure(p1, p2, n1, n2, mu):
     """Check if the point and normal pairs are in force closure.
+
+    Args:
+        p1: The first point.
+        p2: The second point.
+        n1: The surface normal of the first point.
+        n2: The surface normal of the second point.
+        mu: The friction coefficient.
+
+    Returns:
+        True if the force closure condition is satisfied, False otherwise.
     """
     # Line between the contacts.
     v = p2 - p1
     v = v / np.linalg.norm(v)
-    
+
     # Compute cone membership.
     alpha = np.arctan(mu)
     in_cone_1 = (np.arccos(n1.dot(-v)) < alpha)
@@ -95,12 +114,12 @@ class ImageGraspSampler(object):
 
     def sample(self, depth, camera, num_samples):
         """Samples a set of 2D grasps from a given RGB-D image.
-        
+
         Args:
             depth: Depth image.
             camera: The camera model.
             num_samples: Number of grasps to sample.
- 
+
         Returns:
             List of 2D grasp candidates
         """
@@ -120,18 +139,18 @@ class ImageGraspSampler(object):
             image: Depth image.
             camera: The camera model.
             num_samples: Number of grasps to sample.
- 
+
         Returns:
             List of 2D grasp candidates
         """
         pass
-        
+
 
 class AntipodalDepthImageGraspSampler(ImageGraspSampler):
     """Grasp sampler for antipodal point pairs from depth image gradients.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  friction_coef,
                  depth_grad_thresh,
                  depth_grad_gaussian_sigma,
@@ -147,7 +166,7 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
                  depth_sample_window_height,
                  depth_sample_window_width,
                  gripper_width=0.0):
-        """Initialize the sampler. 
+        """Initialize the sampler.
 
         Args:
             friction_coef: Friction coefficient for 2D force closure.
@@ -171,8 +190,8 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
             max_depth_offset: Offset from the maximum depth across all edges.
             depth_sample_window_height: Height of a window around the grasp
                 center pixel used to determine min depth.
-            depth_sample_window_width: Width of a window around the grasp center
-                pixel used to determine min depth.
+            depth_sample_window_width: Width of a window around the grasp
+                center pixel used to determine min depth.
             gripper_width: Maximum width of the gripper.
         """
         # Antipodality parameters.
@@ -198,7 +217,7 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
         # Gripper width.
         self.gripper_width = gripper_width
 
-    def _sample(self, image, camera, num_samples):
+    def _sample(self, image, camera, num_samples):  # NOQA
         """Sample antipodal grasps.
 
         Sample a set of 2D grasp candidates from a depth image by finding depth
@@ -209,7 +228,7 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
             depth: Depth image.
             camera: The camera model.
             num_samples: Number of grasps to sample.
- 
+
         Returns:
             List of 2D grasp candidates
         """
@@ -227,11 +246,6 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
             crop = self.crop
             cropped_image = image[crop[0]:crop[2],
                                   crop[1]:crop[3]]
-
-        # import matplotlib.pyplot as plt
-        # plt.figure()
-        # plt.imshow(image)
-        # plt.show()
 
         # Crope the image.
         image_filtered = scipy.ndimage.filters.gaussian_filter(
@@ -289,7 +303,7 @@ class AntipodalDepthImageGraspSampler(ImageGraspSampler):
         grasps = np.zeros([num_samples, 5], dtype=np.float32)
         num_grasps = 0
 
-        for sample_ind in candidate_pair_indices: 
+        for sample_ind in candidate_pair_indices:
             if num_grasps >= num_samples:
                 break
 

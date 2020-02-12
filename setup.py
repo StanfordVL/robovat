@@ -18,11 +18,13 @@ setup(
     version='0.1.0',
     author='Kuan Fang',
     author_email='kuanfang@ai.stanford.edu',
+    license='MIT',
     packages=find_packages(),
-    url='http://github.com/kuanfang/robovat',
     description=('RoboVat: A unified toolkit for simulated and real-world '
                  'robotic task environments.'),
     long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/StanfordVL/robovat',
     install_requires=[
         'easydict==1.9',
         'future==0.17.1',

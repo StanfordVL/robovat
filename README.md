@@ -1,4 +1,3 @@
-
 # RoboVat
 
 [Installation](#installation)  
@@ -7,38 +6,11 @@
 
 ## Installation
 
-1. **Install the Python development environment** 
-
-	Check if your Python environment is already configured on your system. 
-	We recommend using Python 2.7, while some simulated environments also support Python 3.
-	```bash
-	python --version
-	pip --version
-	virtualenv --version
-	```
-
-	If these packages are already installed, skip to the next step.
-	Otherwise, install on Ubuntu by running:
-	```bash
-	sudo apt update
-	sudo apt install python-dev python-pip
-	sudo pip install -U virtualenv  # system-wide install
-	```
-
-	Or install on mac OS by running:
-	```bash
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-	brew update
-	brew install python@2  # Python 2
-	sudo pip install -U virtualenv  # system-wide install
-	```
-
-2. **Create a virtual environment (recommended)** 
+1. **Create a virtual environment (recommended)** 
 
 	Create a new virtual environment in the root directory or anywhere else:
 	```bash
-	virtualenv --system-site-packages -p python2.7 .venv
+	virtualenv --system-site-packages -p python .venv
 	```
 
 	Activate the virtual environment every time before you use the package:
@@ -51,19 +23,19 @@
 	deactivate
 	```
 
-3. **Install the package** 
+2. **Install the package** 
 
 	The package can be installed by running:
 	```bash
 	python setup.py install
 	```
 
-4. **Download assets** 
+3. **Download assets** 
 
 	Download and unzip the assets folder to the root directory or anywhere else:
 	```bash
-	wget ftp://cs.stanford.edu/cs/cvgl/robovat/assets.zip
-	unzip assets.zip
+	wget ftp://cs.stanford.edu/cs/cvgl/robovat/data.zip
+	unzip data.zip
 	```
 
 	If the assets folder is not in the root directory, remember to specify the 

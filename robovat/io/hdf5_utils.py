@@ -15,6 +15,12 @@ import traceback
 
 def write_data_to_hdf5(f, data, compress_size_thresh=100):
     """Wrte data to HDF5 group.
+
+    Args:
+        f: The HDF5 group to write the data to.
+        data: The data to be writtent, which can be a group, a dict or a list.
+        compress_size_thresh: Data larger or equal to this size will be
+            compressed by the gzip format.
     """
     for key, value in data.items():
         if isinstance(value, dict):
@@ -50,6 +56,12 @@ def write_data_to_hdf5(f, data, compress_size_thresh=100):
 
 def read_data_from_hdf5(f):
     """Read data from HDF5 group.
+
+    Args:
+        f: The HDF5 group to read the data from.
+
+    Returns:
+        The data read from the group.
     """
     data = dict()
 
@@ -87,6 +99,11 @@ class HDF5Writer(object):
     """
 
     def __init__(self, filename):
+        """Initialize.
+
+        Args:
+            filename: The filename of the HDF5 file.
+        """
         self._file = h5py.File(filename, 'w')
 
     def write(self, data):
@@ -102,6 +119,8 @@ class HDF5Writer(object):
         write_data_to_hdf5(group, data)
 
     def close(self):
+        """Close the HDF5 file.
+        """
         self._file.close()
 
 

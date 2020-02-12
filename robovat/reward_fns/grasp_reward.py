@@ -12,15 +12,24 @@ from robovat.utils.logging import logger
 
 class GraspReward(reward_fn.RewardFn):
     """Reward function of the environments."""
-    
+
     def __init__(self,
                  name,
                  end_effector_name,
                  graspable_name,
                  terminate_after_grasp=True,
                  streaming_length=1000):
-        """Initialize."""
-        self.name = name 
+        """Initialize.
+
+        Args:
+            name: Name of the reward.
+            end_effector_name: Name of the end effector.
+            graspable_name: Name of the graspable object.
+            terminate_after_grasp: The episode will be terminated after a grasp
+                attemp if True.
+            streaming_length: The streaming length for keeping the history.
+        """
+        self.name = name
         self.end_effector_name = end_effector_name
         self.graspable_name = graspable_name
         self.terminate_after_grasp = terminate_after_grasp
@@ -38,7 +47,12 @@ class GraspReward(reward_fn.RewardFn):
         self.graspable = self.env.simulator.bodies[self.graspable_name]
 
     def get_reward(self):
-        """Returns the reward value of the current step."""
+        """Returns the reward value of the current step.
+
+        Returns:
+            success: The success signal.
+            terminate_after_grasp: The termination signal.
+        """
         if self.env.simulator:
             self.env.simulator.wait_until_stable(self.graspable)
             success = self.env.simulator.check_contact(
@@ -54,6 +68,11 @@ class GraspReward(reward_fn.RewardFn):
         return success, self.terminate_after_grasp
 
     def _update_history(self, success):
+        """Update the reward history.
+
+        Args:
+            The success signal.
+        """
         self.history.append(success)
 
         if len(self.history) > self.streaming_length:
