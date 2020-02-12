@@ -6,10 +6,10 @@ matplotlib==2.2.4
 numpy==1.16.5
 opencv-python==4.1.0.25
 Pillow==6.1.0
+pybullet=2.6.5
 python-pcl
 PyYAML==5.1.2
 scikit-learn==0.20.4
 scipy==1.2.2
 six==1.11.0
 sklearn==0.0
--e git+https://github.com/bulletphysics/bullet3@6a74f63604ceecd1db5c71036ffb0dbf17294579#egg=pybullet

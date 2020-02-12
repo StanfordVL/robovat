@@ -15,7 +15,7 @@ import yaml
 from easydict import EasyDict as edict
 
 
-ROOT_DIR = os.path.join(os.path.dirname(__file__), '..', '..')
+ROOT_DIR = '.'
 
 
 class YamlConfig(object):
