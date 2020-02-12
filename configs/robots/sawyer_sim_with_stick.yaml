@@ -1,4 +1,0 @@
-!include configs/robots/sawyer_sim.yaml
-
-
-ARM_URDF: 'robots/rethink/sawyer_description/urdf/sawyer_arm_with_stick.urdf'
