@@ -45,8 +45,8 @@ class BulletPhysics(physics.Physics):
 
         if use_visualizer:
             self._uid = pybullet.connect(pybullet.GUI)
-            pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SHADOWS, 0)
-            # pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
+            pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SHADOWS, 1)
+            pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
             assert worker_id == 0
             logger.info('Connected client %d to GUI.', self._uid)
         else:
@@ -148,8 +148,8 @@ class BulletPhysics(physics.Physics):
         Args:
             filename: The path to the body file. The current supported file
                 formats are urdf and sdf.
-            pose: The pose of the base, as an instance of robovat.math.Pose or a
-                tuple of position and orientation.
+            pose: The pose of the base, as an instance of robovat.math.Pose or
+                a tuple of position and orientation.
             scale: The global scaling factor.
             is_static: If set the pose of the base to be fixed.
 
