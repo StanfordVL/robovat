@@ -40,7 +40,7 @@ setup(
         'scipy==1.2.2',
         'six==1.11.0',
         'sklearn==0.0',
-        'pybullet @ git+https://github.com/bulletphysics/bullet3@6a74f63604ceecd1db5c71036ffb0dbf17294579#egg=pybullet', # NOQA
+        'pybullet==1.8.0',
     ],
     include_package_data=False,
     zip_safe=False,
