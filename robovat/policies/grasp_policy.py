@@ -50,7 +50,7 @@ class AntipodalGrasp4DofPolicy(policy.Policy):
     @property
     def default_config(self):
         """Load the default configuration file."""
-        config_path = os.path.join(os.path.dirname(__file__), 'configs',
+        config_path = os.path.join('configs', 'policies',
                                    'antipodal_grasp_4dof_policy.yaml')
         assert os.path.exists(config_path), (
             'Default configuration file %s does not exist' % (config_path)

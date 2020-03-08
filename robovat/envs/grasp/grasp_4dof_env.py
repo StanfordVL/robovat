@@ -40,9 +40,9 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             config: Environment configuration.
             debug: True if it is debugging mode, False otherwise.
         """
-        self.simulator = simulator
-        self.config = config or self.default_config
-        self.debug = debug
+        self._simulator = simulator
+        self._config = config or self.default_config
+        self._debug = debug
 
         # Camera.
         self.camera = self.create_camera(
@@ -53,7 +53,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             rotation=self.config.KINECT2.DEPTH.ROTATION)
 
         # Graspable object.
-        if self.simulator:
+        if self.is_simulation:
             self.graspable = None
             self.graspable_path = None
             self.graspable_pose = None
@@ -70,6 +70,8 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 else:
                     paths = glob.glob(pattern)
 
+                print(pattern)
+
                 self.all_graspable_paths += paths
 
             self.all_graspable_paths.sort()
@@ -79,39 +81,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 % (self.config.SIM.GRASPABLE.PATHS))
             logger.debug('Found %d graspable objects.', num_graspable_paths)
 
-        # Observations.
-        observations = [
-                camera_obs.CameraObs(
-                    name=self.config.OBSERVATION.TYPE,
-                    camera=self.camera,
-                    modality=self.config.OBSERVATION.TYPE,
-                    max_visible_distance_m=None),
-                camera_obs.CameraIntrinsicsObs(
-                    name='intrinsics',
-                    camera=self.camera),
-                camera_obs.CameraTranslationObs(
-                    name='translation',
-                    camera=self.camera),
-                camera_obs.CameraRotationObs(
-                    name='rotation',
-                    camera=self.camera)
-        ]
-
-        # Reward functions.
-        if self.simulator is None:
-            raise NotImplementedError(
-                'Need to implement the real-world grasping reward.'
-            )
-        reward_fns = [
-            GraspReward(
-                name='grasp_reward',
-                end_effector_name=sawyer.SawyerSim.ARM_NAME,
-                graspable_name=GRASPABLE_NAME)
-        ]
-
         super(Grasp4DofEnv, self).__init__(
-            observations=observations,
-            reward_fns=reward_fns,
             simulator=self.simulator,
             config=self.config,
             debug=self.debug)
@@ -124,8 +94,53 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 'Default configuration file %s does not exist' % (config_path))
         return YamlConfig(config_path).as_easydict()
 
-    @property
-    def action_space(self):
+    def create_observations(self):
+        """Create observations.
+
+        Returns:
+            List of observations.
+        """
+        return [
+            camera_obs.CameraObs(
+                name=self.config.OBSERVATION.TYPE,
+                camera=self.camera,
+                modality=self.config.OBSERVATION.TYPE,
+                max_visible_distance_m=None),
+            camera_obs.CameraIntrinsicsObs(
+                name='intrinsics',
+                camera=self.camera),
+            camera_obs.CameraTranslationObs(
+                name='translation',
+                camera=self.camera),
+            camera_obs.CameraRotationObs(
+                name='rotation',
+                camera=self.camera)
+        ]
+
+    def create_reward_fns(self):
+        """Initialize reward functions.
+
+        Returns:
+            List of reward functions.
+        """
+        if self.simulator is None:
+            raise NotImplementedError(
+                'Need to implement the real-world grasping reward.'
+            )
+
+        return [
+            GraspReward(
+                name='grasp_reward',
+                end_effector_name=sawyer.SawyerSim.ARM_NAME,
+                graspable_name=GRASPABLE_NAME)
+        ]
+
+    def create_action_space(self):
+        """Create the action space.
+
+        Returns:
+            The action space.
+        """
         if self.config.ACTION.TYPE == 'CUBOID':
             low = self.config.ACTION.CUBOID.LOW + [0.0]
             high = self.config.ACTION.CUBOID.HIGH + [2 * np.pi]
@@ -143,10 +158,10 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         else:
             raise ValueError
 
-    def reset_scene(self):
+    def _reset_scene(self):
         """Reset the scene in simulation or the real world.
         """
-        super(Grasp4DofEnv, self).reset_scene()
+        super(Grasp4DofEnv, self)._reset_scene()
 
         # Reload graspable object.
         if self.config.SIM.GRASPABLE.RESAMPLE_N_EPISODES:
@@ -180,7 +195,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         self.simulator.wait_until_stable(self.graspable)
 
         # Reset camera.
-        self.reset_camera(
+        self._reset_camera(
             self.camera,
             intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
             translation=self.config.KINECT2.DEPTH.TRANSLATION,
@@ -189,13 +204,13 @@ class Grasp4DofEnv(arm_env.ArmEnv):
             translation_noise=self.config.KINECT2.DEPTH.TRANSLATION_NOISE,
             rotation_noise=self.config.KINECT2.DEPTH.ROTATION_NOISE)
 
-    def reset_robot(self):
+    def _reset_robot(self):
         """Reset the robot in simulation or the real world.
         """
-        super(Grasp4DofEnv, self).reset_robot()
+        super(Grasp4DofEnv, self)._reset_robot()
         self.robot.reset(self.config.ARM.OFFSTAGE_POSITIONS)
 
-    def execute_action(self, action):
+    def _execute_action(self, action):
         """Execute the grasp action.
 
         Args:
@@ -217,18 +232,18 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         phase = 'initial'
 
         # Handle the simulation robustness.
-        if self.simulator:
+        if self.is_simulation:
             num_action_steps = 0
 
         while(phase != 'done'):
 
-            if self.simulator:
+            if self.is_simulation:
                 self.simulator.step()
                 if phase == 'start':
                     num_action_steps += 1
 
-            if self.is_phase_ready(phase, num_action_steps):
-                phase = self.get_next_phase(phase)
+            if self._is_phase_ready(phase, num_action_steps):
+                phase = self._get_next_phase(phase)
                 logger.debug('phase: %s', phase)
 
                 if phase == 'overhead':
@@ -245,7 +260,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                     self.robot.move_to_gripper_pose(start, straight_line=True)
 
                     # Prevent problems caused by unrealistic frictions.
-                    if self.simulator:
+                    if self.is_simulation:
                         self.robot.l_finger_tip.set_dynamics(
                             lateral_friction=0.001,
                             spinning_friction=0.001)
@@ -265,7 +280,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                         postend, straight_line=True)
 
                     # Prevent problems caused by unrealistic frictions.
-                    if self.simulator:
+                    if self.is_simulation:
                         self.robot.l_finger_tip.set_dynamics(
                             lateral_friction=100,
                             rolling_friction=10,
@@ -277,7 +292,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                         self.table.set_dynamics(
                             lateral_friction=1)
 
-    def get_next_phase(self, phase):
+    def _get_next_phase(self, phase):
         """Get the next phase of the current phase.
 
         Args:
@@ -303,7 +318,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         else:
             raise ValueError('Unrecognized phase: %r' % phase)
 
-    def is_phase_ready(self, phase, num_action_steps):
+    def _is_phase_ready(self, phase, num_action_steps):
         """Check if the current phase is ready.
 
         Args:
@@ -313,7 +328,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         Returns:
             The boolean value indicating if the current phase is ready.
         """
-        if self.simulator:
+        if self.is_simulation:
             if phase == 'start':
                 if num_action_steps >= self.config.SIM.MAX_ACTION_STEPS:
                     logger.debug('The grasping motion is stuck.')

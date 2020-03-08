@@ -34,8 +34,7 @@ class Policy(object):
         config_path = os.path.join('configs', 'policies',
                                    '%s.yaml' % (policy_name))
         assert os.path.exists(config_path), (
-            'Default configuration file %s does not exist' % (config_path)
-        )
+            'Default configuration file %s does not exist' % (config_path))
         return YamlConfig(config_path).as_easydict()
 
     def action(self, observation):
