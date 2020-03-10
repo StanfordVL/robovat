@@ -7,7 +7,7 @@
 
 ## About
 
-<p align="center"><img width="80%" src="docs/push_env.gif" /></p>
+<p align="center"><img width="80%" src="docs/push_env.png" /></p>
 
 RoboVat is a tookit for fast development of robotic task environments in simulation and the real world. It provides unified APIs for robot control and perception to bridge the reality gap. Its name is derived from [brain in a vat](https://en.wikipedia.org/wiki/Brain_in_a_vat).
 
