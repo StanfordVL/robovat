@@ -7,11 +7,11 @@
 
 ## About
 
+RoboVat is a tookit for fast development of robotic task environments in simulation and the real world. It provides unified APIs for robot control and perception to bridge the reality gap. Its name is derived from [<em>brain in a vat</em>](https://en.wikipedia.org/wiki/Brain_in_a_vat).
+
+Currently, RoboVat supports [Sawyer](https://www.rethinkrobotics.com/sawyer) robot via [Intera SDK](https://github.com/RethinkRobotics/intera_sdk). The simulatied environments run with [PyBullet](https://github.com/bulletphysics/bullet3/). The codebase is under active development and more environments will be included in the future.
+
 <p align="center"><img width="80%" src="docs/push_env.png" /></p>
-
-RoboVat is a tookit for fast development of robotic task environments in simulation and the real world. It provides unified APIs for robot control and perception to bridge the reality gap. Its name is derived from [brain in a vat](https://en.wikipedia.org/wiki/Brain_in_a_vat).
-
-Currently, RoboVat supports [Sawyer](https://www.rethinkrobotics.com/sawyer) robot via [Intera SDK](https://github.com/RethinkRobotics/intera_sdk). The simulatied environments run with [PyBullet](https://github.com/bulletphysics/bullet3/commits/master). The codebase is under active development and more environments will be included in the future.
 
 ## Installation
 
