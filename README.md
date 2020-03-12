@@ -68,13 +68,6 @@ Detailed usage of the CLI are currently explained in the source code of `tools/s
 * Reset the robot: `r`
 * Close and open the gripper: `g` and `o`
 
-### 4-DoF Grasping
-
-Execute a table-top 4-DoF grasping tasks with sampled antipodal grasps:
-```bash
-python tools/run_env.py --env Grasp4DofEnv --policy AntipodalGrasp4DofPolicy --debug 1
-```
-
 ### Planar Pushing
 
 Execute a planar pushing tasks with a heuristic policy:
