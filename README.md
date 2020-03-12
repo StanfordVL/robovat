@@ -1,3 +1,4 @@
+
 # RoboVat
 
 [About](#about)  
@@ -43,10 +44,10 @@ Currently, RoboVat supports [Sawyer](https://www.rethinkrobotics.com/sawyer) rob
 
 	Download and unzip the assets folder from [Box](https://app.box.com/s/decsiq52cg6w6898ukl60ylmi7gqv2qr) or the FTP link below to the root directory:
 	```bash
-  wget ftp://cs.stanford.edu/cs/cvgl/robovat/assets.zip
-  wget ftp://cs.stanford.edu/cs/cvgl/robovat/configs.zip
-  unzip assets.zip
-  unzip configs.zip
+	wget ftp://cs.stanford.edu/cs/cvgl/robovat/assets.zip
+	wget ftp://cs.stanford.edu/cs/cvgl/robovat/configs.zip
+	unzip assets.zip
+	unzip configs.zip
 	```
 
 	If the assets folder is not in the root directory, remember to specify the 
