@@ -40,7 +40,7 @@ setup(
         'scipy==1.2.2',
         'six==1.11.0',
         'sklearn==0.0',
-        'pybullet==1.8.0',
+        'pybullet==2.6.5',
     ],
     include_package_data=False,
     zip_safe=False,

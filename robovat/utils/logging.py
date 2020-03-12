@@ -11,7 +11,7 @@ import logging.config
 
 
 try:
-    config_path = os.path.join(os.path.dirname(__file__), 'logging.config')
+    config_path = os.path.join('configs', 'logging.config')
     logging.config.fileConfig(config_path)
 except Exception:
     print('Unable to set the formatters for logging.')

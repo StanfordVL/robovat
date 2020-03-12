@@ -207,7 +207,6 @@ class RobotEnv(gym.Env):
             for reward_fn in self.reward_fns:
                 reward_fn.on_episode_end()
 
-        self._num_episodes += 1
         self._num_steps = 0
         self._episode_reward = 0.0
         self._done = False
@@ -260,6 +259,7 @@ class RobotEnv(gym.Env):
         logger.info('step: %d, reward: %.3f', self.num_steps, reward)
 
         if self._done:
+            self._num_episodes += 1
             self._total_reward += self.episode_reward
             logger.info(
                 'episode_reward: %.3f, avg_episode_reward: %.3f',
@@ -308,6 +308,10 @@ class RobotEnv(gym.Env):
         reward = float(reward)
 
         return reward, termination
+
+    def render(self):
+        """Render the current step of the environment."""
+        pass
 
     @abc.abstractmethod
     def _reset(self):

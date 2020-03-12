@@ -259,7 +259,6 @@ class PushEnv(arm_env.ArmEnv):
         if self.num_goal_steps is None:
             action_shape = [4]
         else:
-            assert self.num_goal_steps > 0
             action_shape = [self.num_goal_steps, 4]
 
         return gym.spaces.Box(
