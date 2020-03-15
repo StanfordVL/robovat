@@ -62,7 +62,7 @@ A command line interface (CLI) is provided for debugging purposes. We recommend 
 python tools/sawyer_cli.py --mode sim
 ```
 
-Detailed usage of the CLI are currently explained in the source code of `tools/sawyer_cli.py`. Several simple functions can be test by entering the instructions below in the terminal:
+Detailed usage of the CLI are explained in the source code of `tools/sawyer_cli.py`. The simulated and real-world Sawyer robot can be test using these instructions below in the terminal:
 * Visualize the camera images: `v`
 * Mouse click and reach: `c`
 * Reset the robot: `r`
@@ -79,6 +79,8 @@ To execute semantic pushing tasks, we can add bindings to the configurations:
 ```bash
 python tools/run_env.py --env PushEnv --policy HeuristicPushPolicy --env_config configs/envs/push_env.yaml --policy_config configs/policies/heuristic_push_policy.yaml --config_bindings "{'TASK_NAME':'crossing','LAYOUT_ID':0}" --debug 1
 ```
+
+To execute the tasks with pretrained [CAVIN](http://pair.stanford.edu/cavin/) planner, please see [this codebase](https://github.com/stanfordvl/cavin).
 
 ### Process Objects for Simulation
 
