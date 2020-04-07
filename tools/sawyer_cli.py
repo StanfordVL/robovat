@@ -297,10 +297,6 @@ class SawyerCLI(object):
             plt.imshow(depth)
             plt.title('Depth Image')
 
-            # end_effector_pose = self.robot.end_effector
-            # pixel = self.camera.project_point(end_effector_pose.position)
-            # plt.scatter(pixel[0], pixel[1], c='r')
-
             plt.show()
 
         # Visualize the table.

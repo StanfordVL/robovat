@@ -35,7 +35,12 @@ Currently, RoboVat supports [Sawyer](https://www.rethinkrobotics.com/sawyer) rob
 
 2. **Install the package** 
 
-	The package can be installed by running:
+  Using pip to install the package:
+	```bash
+	pip install robovat
+	```
+
+	The package can also be installed by running:
 	```bash
 	python setup.py install
 	```

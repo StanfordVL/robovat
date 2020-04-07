@@ -15,9 +15,9 @@ from robovat.utils.logging import logger
 class SawyerSim(sawyer.Sawyer):
     """Sawyer wrapper in simulation."""
 
-    BASE_NAME = 'sawer_base'
-    ARM_NAME = 'sawer_arm'
-    HEAD_NAME = 'sawer_head'
+    ARM_NAME = 'sawyer_arm'
+    BASE_NAME = 'sawyer_base'
+    HEAD_NAME = 'sawyer_head'
 
     def __init__(self,
                  simulator,
@@ -60,6 +60,10 @@ class SawyerSim(sawyer.Sawyer):
     @property
     def base(self):
         return self._base
+
+    @property
+    def head(self):
+        return self._head
 
     @property
     def l_finger_tip(self):
