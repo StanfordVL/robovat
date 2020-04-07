@@ -5,6 +5,7 @@
 *.pyc
 *.pyv
 *.venv
+*.zip
 .python_history
 0_VRDemoSettings.txt
 
