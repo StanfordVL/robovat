@@ -47,7 +47,7 @@ class PushEnv(arm_env.ArmEnv):
         self._config = config or self.default_config
         self._debug = debug
 
-        self.camera = self.create_camera(
+        self.camera = self._create_camera(
             height=self.config.KINECT2.DEPTH.HEIGHT,
             width=self.config.KINECT2.DEPTH.WIDTH,
             intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
@@ -160,7 +160,7 @@ class PushEnv(arm_env.ArmEnv):
             config=self.config,
             debug=self.debug)
 
-    def create_observations(self):
+    def _create_observations(self):
         """Create observations.
 
         Returns:
@@ -235,7 +235,7 @@ class PushEnv(arm_env.ArmEnv):
 
         return observations
 
-    def create_reward_fns(self):
+    def _create_reward_fns(self):
         """Initialize reward functions.
 
         Returns:
@@ -250,7 +250,7 @@ class PushEnv(arm_env.ArmEnv):
             )
         ]
 
-    def create_action_space(self):
+    def _create_action_space(self):
         """Create the action space.
 
         Returns:
@@ -281,7 +281,7 @@ class PushEnv(arm_env.ArmEnv):
 
         if self.use_recording:
             hostname = socket.gethostname().split('.')[0]
-            self.recording_camera = self.create_camera(
+            self.recording_camera = self._create_camera(
                 height=self.config.RECORDING.CAMERA.HEIGHT,
                 width=self.config.RECORDING.CAMERA.WIDTH,
                 intrinsics=self.config.RECORDING.CAMERA.INTRINSICS,

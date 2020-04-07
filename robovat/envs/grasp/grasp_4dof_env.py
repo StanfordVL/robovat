@@ -45,7 +45,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
         self._debug = debug
 
         # Camera.
-        self.camera = self.create_camera(
+        self.camera = self._create_camera(
             height=self.config.KINECT2.DEPTH.HEIGHT,
             width=self.config.KINECT2.DEPTH.WIDTH,
             intrinsics=self.config.KINECT2.DEPTH.INTRINSICS,
@@ -94,7 +94,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 'Default configuration file %s does not exist' % (config_path))
         return YamlConfig(config_path).as_easydict()
 
-    def create_observations(self):
+    def _create_observations(self):
         """Create observations.
 
         Returns:
@@ -117,7 +117,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 camera=self.camera)
         ]
 
-    def create_reward_fns(self):
+    def _create_reward_fns(self):
         """Initialize reward functions.
 
         Returns:
@@ -135,7 +135,7 @@ class Grasp4DofEnv(arm_env.ArmEnv):
                 graspable_name=GRASPABLE_NAME)
         ]
 
-    def create_action_space(self):
+    def _create_action_space(self):
         """Create the action space.
 
         Returns:

@@ -35,12 +35,12 @@ class ArmEnv(robot_env.RobotEnv):
         self.table = None
         self.table_pose = None
 
-    def create_camera(self,
-                      height,
-                      width,
-                      intrinsics,
-                      translation,
-                      rotation):
+    def _create_camera(self,
+                       height,
+                       width,
+                       intrinsics,
+                       translation,
+                       rotation):
         """Create a camera instance.
 
         Args:

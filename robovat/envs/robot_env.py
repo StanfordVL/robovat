@@ -67,15 +67,15 @@ class RobotEnv(gym.Env):
         self._total_reward = 0.0
         self._done = True
 
-        self._observations = self.create_observations()
+        self._observations = self._create_observations()
         for obs in self.observations:
             obs.initialize(self)
 
-        self._reward_fns = self.create_reward_fns()
+        self._reward_fns = self._create_reward_fns()
         for reward_fn in self.reward_fns:
             reward_fn.initialize(self)
 
-        self._action_space = self.create_action_space()
+        self._action_space = self._create_action_space()
 
         self._observation_space = gym.spaces.Dict([
             (obs.name, obs.get_gym_space()) for obs in self.observations
@@ -175,7 +175,7 @@ class RobotEnv(gym.Env):
         """The observation data of the previous step."""
         return self._prev_obs_data
 
-    def create_observations(self):
+    def _create_observations(self):
         """Create observations.
 
         Returns:
@@ -183,7 +183,7 @@ class RobotEnv(gym.Env):
         """
         raise NotImplementedError
 
-    def create_reward_fns(self):
+    def _create_reward_fns(self):
         """Initialize reward functions.
 
         Returns:
@@ -191,7 +191,7 @@ class RobotEnv(gym.Env):
         """
         raise NotImplementedError
 
-    def create_action_space(self):
+    def _create_action_space(self):
         """Create the action space.
 
         Returns:
