@@ -17,7 +17,7 @@ class RobotCommand(object):
                  command_type,
                  arguments,
                  timeout=None,
-                 async=False):
+                 is_async=False):
         """Initialize.
 
         Args:
@@ -31,4 +31,4 @@ class RobotCommand(object):
         self.command_type = command_type
         self.arguments = arguments
         self.timeout = timeout
-        self.async = async
+        self.is_async = is_async
