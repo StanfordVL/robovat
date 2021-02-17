@@ -44,6 +44,8 @@ class BulletPhysics(physics.Physics):
         logger.info('pybullet API Version: %s.' % (pybullet.getAPIVersion()))
 
         if use_visualizer:
+            import matplotlib.pyplot as plt
+            plt.figure()
             self._uid = pybullet.connect(pybullet.GUI)
             pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SHADOWS, 1)
             pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
