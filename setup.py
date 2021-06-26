@@ -35,7 +35,7 @@ setup(
         'opencv-python==4.1.0.25',
         'Pillow==8.2.0',
         'python-pcl',
-        'PyYAML==5.1.2',
+        'PyYAML==5.4',
         'scikit-learn==0.20.4',
         'scipy==1.2.2',
         'six==1.11.0',
