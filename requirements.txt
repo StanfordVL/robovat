@@ -4,7 +4,7 @@ gym==0.14.0
 h5py==2.9.0
 matplotlib==2.2.4
 numpy==1.16.5
-opencv-python==4.1.0.25
+opencv-python==4.1.1.26
 Pillow==8.2.0
 pybullet==2.6.5
 python-pcl
