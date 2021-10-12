@@ -32,7 +32,7 @@ setup(
         'h5py==2.9.0',
         'matplotlib==2.2.4',
         'numpy==1.16.5',
-        'opencv-python==4.1.0.25',
+        'opencv-python==4.2.0.32',
         'Pillow==8.2.0',
         'python-pcl',
         'PyYAML==5.1.2',
