@@ -33,7 +33,7 @@ setup(
         'matplotlib==2.2.4',
         'numpy==1.16.5',
         'opencv-python==4.1.0.25',
-        'Pillow==8.2.0',
+        'Pillow==9.0.0',
         'python-pcl',
         'PyYAML==5.1.2',
         'scikit-learn==0.20.4',
