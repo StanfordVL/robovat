@@ -31,7 +31,7 @@ setup(
         'gym==0.14.0',
         'h5py==2.9.0',
         'matplotlib==2.2.4',
-        'numpy==1.16.5',
+        'numpy==1.22.0',
         'opencv-python==4.1.0.25',
         'Pillow==8.2.0',
         'python-pcl',
